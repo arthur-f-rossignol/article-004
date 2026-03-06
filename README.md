@@ -1,1 +1,1 @@
-This repository contains the codes fore the article _Addressing Unobserved Covariates in Species Distribution Models: Impacts on Inferential Quality and Mitigation via Joint Species Distribution Models_.
+This repository contains the codes fore the article (preprint) _Addressing Unobserved Covariates in Species Distribution Models: Impacts on Inference and Mitigation via Joint Species Distribution Models_.
