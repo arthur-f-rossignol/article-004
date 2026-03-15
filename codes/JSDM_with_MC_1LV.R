@@ -30,7 +30,7 @@ DEFAULT_PARAMS <- list(n      = 500,      # number of sites
                        num_lv = 0,        # number of latent variables 
                        
                        mcmc = list(niter_min      = 25000,
-                                  nburnin_min    = 25000,
+                                  nburnin_min     = 25000,
                                    thin_min       = 10,
                                    nchains        = 3,
                                    conv_max       = 1.05,
