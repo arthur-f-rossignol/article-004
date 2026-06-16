@@ -65,23 +65,17 @@ data_models <- c("gaussian",             # Gaussian with identity link
                  "bernoulli_logit",      # Bernoulli with logit link
                  "bernoulli_cloglog")    # Bernoulli with cloglog link
 
-# Method groups (organised by their ORLE availability)
-
-# Frequentist, fitted without ORLE only
 frequentist_no_OLRE_methods   <- c("glmrob",         # SDM.9
                                    "quasi_poisson",  # SDM.10
                                    "quasi_binomial") # SDM.10
 
-# Frequentist, fitted with ORLE only
 frequentist_OLRE_only_methods <- c("GLMMadaptive")  # SDM.4
 
-# Frequentist, fitted in both variants
 frequentist_both_methods <- c("glmer",          # SDM.1
                               "glmmTMB",        # SDM.2
                               "spaMM",          # SDM.3
                               "gamm")           # SDM.11
 
-# Bayesian, fitted in both variants
 bayesian_both_methods <- c("brms",          # SDM.5
                            "inla",          # SDM.6
                            "nimble",        # SDM.7
@@ -94,7 +88,6 @@ fit_methods <- c(frequentist_no_OLRE_methods,
                  paste0(bayesian_both_methods, "_no_OLRE"),
                  paste0(bayesian_both_methods, "_OLRE"))
 
-# Mapping of each base method onto its SDM label in Table tab:list_SDMs
 method_to_sdm <- c(glmer          = "SDM.1",
                    glmmTMB        = "SDM.2",
                    spaMM          = "SDM.3",
@@ -108,7 +101,6 @@ method_to_sdm <- c(glmer          = "SDM.1",
                    quasi_binomial = "SDM.10",
                    gamm           = "SDM.11")
 
-# Which data models each base method may be fitted to (link/family support)
 method_compatibility <- list(glmer        = c("gaussian", "poisson",
                                               "bernoulli_probit", "bernoulli_logit",
                                               "bernoulli_cloglog"),
@@ -140,7 +132,6 @@ method_compatibility <- list(glmer        = c("gaussian", "poisson",
                              quasi_binomial = c("bernoulli_probit", "bernoulli_logit",
                                                 "bernoulli_cloglog"))
 
-# An ORLE variant is either an explicit "_OLRE" method or one of the ORLE-only methods
 is_olre_variant <- function(method_name) {
   (grepl("_OLRE$", method_name) && !grepl("_no_OLRE$", method_name)) ||
     (method_name %in% frequentist_OLRE_only_methods)
