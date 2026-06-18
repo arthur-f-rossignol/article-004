@@ -40,36 +40,35 @@ DEFAULT_PARAMS <- list(n      = 500,      # number of sites
 ## SCENARIO PARAMETERIZATION ###################################################
 
 build_scenarios <- function(p) {
-  list(
-    S.1 = list(name       = "S.1",
-               true_alpha = rep(1, p),
-               true_beta  = rep(1, p),
-               true_gamma = rep(1, p)),
+  list(S.1 = list(name       = "S.1",
+                  true_alpha = rep(1, p),
+                  true_beta  = rep(1, p),
+                  true_gamma = rep(1, p)),
     
-    S.2 = list(name       = "S.2",
-               true_alpha = rep(0, p),
-               true_beta  = rep(0.5, p),
-               true_gamma = rep(0.5, p)),
+       S.2 = list(name       = "S.2",
+                  true_alpha = rep(0, p),
+                  true_beta  = rep(0.5, p),
+                  true_gamma = rep(0.5, p)),
     
-    S.3 = list(name       = "S.3",
-               true_alpha = rep(-1.5, p),
-               true_beta  = rep(0.5, p),
-               true_gamma = rep(0.5, p)),
+       S.3 = list(name       = "S.3",
+                  true_alpha = rep(-1.5, p),
+                  true_beta  = rep(0.5, p),
+                  true_gamma = rep(0.5, p)),
     
-    S.4 = list(name       = "S.4",
-               true_alpha = seq(-1.5, 1.5, length.out = p),
-               true_beta  = rep(0.5, p),
-               true_gamma = rep(0.5, p)),
+       S.4 = list(name       = "S.4",
+                  true_alpha = seq(-1.5, 1.5, length.out = p),
+                  true_beta  = rep(0.5, p),
+                  true_gamma = rep(0.5, p)),
     
-    S.5 = list(name       = "S.5",
-               true_alpha = rep(0, p),
-               true_beta  = rep(1.5, p),
-               true_gamma = rep(0.2, p)),
+       S.5 = list(name       = "S.5",
+                  true_alpha = rep(0, p),
+                  true_beta  = rep(1.5, p),
+                  true_gamma = rep(0.2, p)),
     
-    S.6 = list(name       = "S.6",
-               true_alpha = seq(-1, 1, length.out = p),
-               true_beta  = rep(1, p),
-               true_gamma = rep(-0.5, p)))
+       S.6 = list(name       = "S.6",
+                  true_alpha = seq(-1, 1, length.out = p),
+                  true_beta  = rep(1, p),
+                  true_gamma = rep(-0.5, p)))
 }
 
 ## DATA GENRATING PROCESS ######################################################
