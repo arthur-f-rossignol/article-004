@@ -125,25 +125,21 @@ simulate_data <- function(seed,
 initialize_results <- function(p, 
                                num_lv) {
   
-  list(
-    alpha_estimates       = rep(NA_real_, p),
-    alpha_standard_errors = rep(NA_real_, p),
-    beta_estimates        = rep(NA_real_, p),
-    beta_standard_errors  = rep(NA_real_, p),
-
-    num_latent_variables = num_lv,
-    latent_variables     = NULL,
-    loadings             = NULL,
-
-    convergence = FALSE,
-    ess_alpha   = NA_real_,
-    ess_beta    = NA_real_,
-    psrf_alpha  = NA_real_,
-    psrf_beta   = NA_real_,
-    psrf_max    = NA_real_,
-
-    computation_time = NA_real_,
-    error_message    = NA_character_)
+  list(alpha_estimates       = rep(NA_real_, p),
+       alpha_standard_errors = rep(NA_real_, p),
+       beta_estimates        = rep(NA_real_, p),
+       beta_standard_errors  = rep(NA_real_, p),
+       num_latent_variables  = num_lv,
+       latent_variables      = NULL,
+       loadings              = NULL,
+       convergence           = FALSE,
+       ess_alpha             = NA_real_,
+       ess_beta              = NA_real_,
+       psrf_alpha            = NA_real_,
+       psrf_beta             = NA_real_,
+       psrf_max              = NA_real_,
+       computation_time      = NA_real_,
+       error_message         = NA_character_)
 }
 
 ## JSDM.1 ######################################################################
