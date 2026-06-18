@@ -65,21 +65,21 @@ data_models <- c("gaussian",               # Gaussian with identity link
                  "bernoulli_logit",        # Bernoulli with logit link
                  "bernoulli_cloglog")      # Bernoulli with cloglog link
 
-frequentist_no_OLRE_methods   <- c("SDM9",
-                                   "SDM10-QP",
-                                   "SDM10-QB")
+frequentist_no_OLRE_methods   <- c("SDM.9",
+                                   "SDM.10-QP",
+                                   "SDM.10-QB")
 
-frequentist_OLRE_only_methods <- c("SDM4")
+frequentist_OLRE_only_methods <- c("SDM.4")
 
-frequentist_both_methods <- c("SDM1",
-                              "SDM2",
-                              "SDM3",
-                              "SDM11")
+frequentist_both_methods <- c("SDM.1",
+                              "SDM.2",
+                              "SDM.3",
+                              "SDM.11")
 
-bayesian_both_methods <- c("SDM5",
-                           "SDM6",
-                           "SDM7",
-                           "SDM8")
+bayesian_both_methods <- c("SDM.5",
+                           "SDM.6",
+                           "SDM.7",
+                           "SDM.8")
 
 fit_methods <- c(frequentist_no_OLRE_methods,
                  frequentist_OLRE_only_methods,
@@ -88,66 +88,66 @@ fit_methods <- c(frequentist_no_OLRE_methods,
                  paste0(bayesian_both_methods, "_no_OLRE"),
                  paste0(bayesian_both_methods, "_OLRE"))
 
-method_to_sdm <- c(SDM1      = "SDM.1",
-                   SDM2     = "SDM.2",
-                   SDM3     = "SDM.3",
-                   SDM4     = "SDM.4",
-                   SDM5     = "SDM.5",
-                   SDM6     = "SDM.6",
-                   SDM7     = "SDM.7",
-                   SDM8     = "SDM.8",
-                   SDM9     = "SDM.9",
-                   SDM10_QP = "SDM.10",
-                   SDM10_QB = "SDM.10",
-                   SDM11    = "SDM.11")
+method_to_sdm <- c(SDM.1      = "SDM.1",
+                   SDM.2     = "SDM.2",
+                   SDM.3     = "SDM.3",
+                   SDM.4     = "SDM.4",
+                   SDM.5     = "SDM.5",
+                   SDM.6     = "SDM.6",
+                   SDM.7     = "SDM.7",
+                   SDM.8     = "SDM.8",
+                   SDM.9     = "SDM.9",
+                   SDM.10_QP = "SDM.10",
+                   SDM.10_QB = "SDM.10",
+                   SDM.11    = "SDM.11")
 
-method_compatibility <- list(SDM1     = c("gaussian", 
+method_compatibility <- list(SDM.1     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM2     = c("gaussian", 
+                             SDM.2     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit",
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM3     = c("gaussian", 
+                             SDM.3     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM4     = c("poisson",
+                             SDM.4     = c("poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit"),
-                             SDM5     = c("gaussian", 
+                             SDM.5     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit"),
-                             SDM6     = c("gaussian", 
+                             SDM.6     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM7     = c("gaussian", 
+                             SDM.7     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM8     = c("gaussian", 
+                             SDM.8     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM9     = c("gaussian", 
+                             SDM.9     = c("gaussian", 
                                           "poisson",
                                           "bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM10_QP = c("poisson"),
-                             SDM10_QB = c("bernoulli_probit", 
+                             SDM.10_QP = c("poisson"),
+                             SDM.10_QB = c("bernoulli_probit", 
                                           "bernoulli_logit",
                                           "bernoulli_cloglog"),
-                             SDM11    = c("gaussian", 
+                             SDM.11    = c("gaussian", 
                                           "poisson",
                                           "bernoulli_logit"))
 
@@ -201,7 +201,7 @@ get_family <- function(model_type) {
 
 ## SDM.1 #######################################################################
 
-fit_SDM1 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.1 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -251,7 +251,7 @@ fit_SDM1 <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.2 #######################################################################
 
-fit_SDM2 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.2 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -289,7 +289,7 @@ fit_SDM2 <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.3 • #####################################################################
 
-fit_SDM3 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.3 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -353,7 +353,7 @@ fit_SDM3 <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.4 #######################################################################
 
-fit_SDM4 <- function(Y, X1, model_type) {
+fit_SDM.4 <- function(Y, X1, model_type) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -399,7 +399,7 @@ fit_SDM4 <- function(Y, X1, model_type) {
 
 ## SDM.5 #######################################################################
 
-fit_SDM5 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -469,7 +469,7 @@ fit_SDM5 <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.6 #######################################################################
 
-fit_SDM6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
+fit_SDM.6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
   
   site_id_numeric <- seq_along(Y)
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id_numeric)
@@ -539,7 +539,7 @@ fit_SDM6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
 
 ## SDM.7 #######################################################################
 
-fit_SDM7 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
   
   n_obs           <- length(Y)
   site_id_numeric <- seq_len(n_obs)
@@ -703,8 +703,8 @@ fit_SDM7 <- function(Y, X1, model_type, use_OLRE) {
                                  thin.min     = 1,
                                  thin.max     = Inf,
                                  Nchains      = Nchains,
-                                 conv.max     = 1.01,
-                                 neff.min     = 10000,
+                                 conv.max     = 1.05,
+                                 neff.min     = 5000,
                                  control      = list(time.max                   = 3600,
                                                      round.thinmult             = TRUE,
                                                      print.diagnostics          = TRUE,
@@ -732,7 +732,7 @@ fit_SDM7 <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.8 #######################################################################
 
-fit_SDM8 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.8 <- function(Y, X1, model_type, use_OLRE) {
   
   n_obs           <- length(Y)
   site_id_numeric <- seq_len(n_obs)
@@ -896,7 +896,7 @@ fit_SDM8 <- function(Y, X1, model_type, use_OLRE) {
   
   Nchains <- 3
   
-  jags_out <- runMCMC_btadjust(MCMC_language = "SDM8",
+  jags_out <- runMCMC_btadjust(MCMC_language = "SDM.8",
                                code          = jags_model,
                                data          = jags_data,
                                inits         = lapply(1:Nchains, make_inits),
@@ -909,7 +909,7 @@ fit_SDM8 <- function(Y, X1, model_type, use_OLRE) {
                                thin.max      = Inf,
                                Nchains       = Nchains,
                                conv.max      = 1.05,
-                               neff.min      = 10000,
+                               neff.min      = 5000,
                                control       = list(time.max                   = 3600,
                                                     round.thinmult             = TRUE,
                                                     print.diagnostics          = TRUE,
@@ -939,7 +939,7 @@ fit_SDM8 <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.9 #######################################################################
 
-fit_SDM9 <- function(Y, X1, model_type) {
+fit_SDM.9 <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
@@ -961,7 +961,7 @@ fit_SDM9 <- function(Y, X1, model_type) {
 
 ## SDM.10 ######################################################################
 
-fit_SDM10_QP <- function(Y, X1, model_type) {
+fit_SDM.10_QP <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
@@ -976,7 +976,7 @@ fit_SDM10_QP <- function(Y, X1, model_type) {
        converged = fit$converged)
 }
 
-fit_SDM10_QB <- function(Y, X1, model_type) {
+fit_SDM.10_QB <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
@@ -993,7 +993,7 @@ fit_SDM10_QB <- function(Y, X1, model_type) {
 
 ## SDM.11 ######################################################################
 
-fit_SDM11 <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM.11 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -1109,18 +1109,18 @@ fit_model <- function(Y, X1, model_type, method) {
   }
   
   sub_result <- switch(base_method,
-                       "SDM1"     = fit_SDM1(Y, X1, model_type, use_OLRE),
-                       "SDM2"     = fit_SDM2(Y, X1, model_type, use_OLRE),
-                       "SDM3"     = fit_SDM3(Y, X1, model_type, use_OLRE),
-                       "SDM4"     = fit_SDM4(Y, X1, model_type),
-                       "SDM5"     = fit_SDM5(Y, X1, model_type, use_OLRE),
-                       "SDM6"     = fit_SDM6(Y, X1, model_type, use_OLRE),
-                       "SDM7"     = fit_SDM7(Y, X1, model_type, use_OLRE),
-                       "SDM8"     = fit_SDM8(Y, X1, model_type, use_OLRE),
-                       "SDM9"     = fit_SDM9(Y, X1, model_type),
-                       "SDM10-QP" = fit_SDM10_QP(Y, X1, model_type),
-                       "SDM10-QB" = fit_SDM10_QB(Y, X1, model_type),
-                       "SDM11"    = fit_SDM11(Y, X1, model_type, use_OLRE),
+                       "SDM.1"     = fit_SDM.1(Y, X1, model_type, use_OLRE),
+                       "SDM.2"     = fit_SDM.2(Y, X1, model_type, use_OLRE),
+                       "SDM.3"     = fit_SDM.3(Y, X1, model_type, use_OLRE),
+                       "SDM.4"     = fit_SDM.4(Y, X1, model_type),
+                       "SDM.5"     = fit_SDM.5(Y, X1, model_type, use_OLRE),
+                       "SDM.6"     = fit_SDM.6(Y, X1, model_type, use_OLRE),
+                       "SDM.7"     = fit_SDM.7(Y, X1, model_type, use_OLRE),
+                       "SDM.8"     = fit_SDM.8(Y, X1, model_type, use_OLRE),
+                       "SDM.9"     = fit_SDM.9(Y, X1, model_type),
+                       "SDM.10-QP" = fit_SDM.10_QP(Y, X1, model_type),
+                       "SDM.10-QB" = fit_SDM.10_QB(Y, X1, model_type),
+                       "SDM.11"    = fit_SDM.11(Y, X1, model_type, use_OLRE),
                        list(error_msg = paste("Method", base_method, "not implemented")))
   
   result           <- modifyList(result, sub_result)
