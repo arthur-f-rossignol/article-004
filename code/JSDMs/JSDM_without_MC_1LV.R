@@ -71,7 +71,7 @@ build_scenarios <- function(p) {
                   true_gamma = rep(-0.5, p)))
 }
 
-## DATA GENRATING PROCESS ######################################################
+## DATA GENERATING PROCESS #####################################################
 
 simulate_data <- function(seed, 
                           scenario, 
