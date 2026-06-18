@@ -75,7 +75,7 @@ filter_species <- function(Y, min_occ, max_occ) {
   Y[, keep, drop = FALSE]
 }
 
-do_pca <- function(X, n_pcs) {
+perform_pca <- function(X, n_pcs) {
   pca          <- prcomp(scale(X), center = FALSE, scale. = FALSE)
   n_use        <- min(n_pcs, ncol(X), nrow(X) - 1)
   pc           <- pca$x[, 1:n_use, drop = FALSE]
@@ -443,7 +443,7 @@ fit_sdm_JAGS <- function(Y, X, cfg, seed) {
 
 data_raw <- load_data(dataset_name)
 Y        <- filter_species(data_raw$Y, cfg$min_occ, cfg$max_occ)
-pca      <- do_pca(data_raw$X, cfg$n_pcs)
+pca      <- perform_pca(data_raw$X, cfg$n_pcs)
 X_pca    <- pca$scores
 
 n_species    <- ncol(Y)
