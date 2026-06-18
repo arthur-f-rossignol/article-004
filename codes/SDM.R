@@ -59,27 +59,27 @@ gamma_true <- 1           # coefficient for covariate X2 (unobserved / missing)
 
 ## LIST OF MODELS ##############################################################
 
-data_models <- c("gaussian",             # Gaussian with identity link
-                 "poisson",              # Poisson with log link
-                 "bernoulli_probit",     # Bernoulli with probit link
-                 "bernoulli_logit",      # Bernoulli with logit link
-                 "bernoulli_cloglog")    # Bernoulli with cloglog link
+data_models <- c("gaussian",               # Gaussian with identity link
+                 "poisson",                # Poisson with log link
+                 "bernoulli_probit",       # Bernoulli with probit link
+                 "bernoulli_logit",        # Bernoulli with logit link
+                 "bernoulli_cloglog")      # Bernoulli with cloglog link
 
-frequentist_no_OLRE_methods   <- c("glmrob",         # SDM.9
-                                   "quasi_poisson",  # SDM.10
-                                   "quasi_binomial") # SDM.10
+frequentist_no_OLRE_methods   <- c("SDM9",
+                                   "SDM10-QP",
+                                   "SDM10-QB")
 
-frequentist_OLRE_only_methods <- c("GLMMadaptive")  # SDM.4
+frequentist_OLRE_only_methods <- c("SDM4")
 
-frequentist_both_methods <- c("glmer",          # SDM.1
-                              "glmmTMB",        # SDM.2
-                              "spaMM",          # SDM.3
-                              "gamm")           # SDM.11
+frequentist_both_methods <- c("SDM1",
+                              "SDM2",
+                              "SDM3",
+                              "SDM11")
 
-bayesian_both_methods <- c("brms",          # SDM.5
-                           "inla",          # SDM.6
-                           "nimble",        # SDM.7
-                           "jags")          # SDM.8
+bayesian_both_methods <- c("SDM5",
+                           "SDM6",
+                           "SDM7",
+                           "SDM8")
 
 fit_methods <- c(frequentist_no_OLRE_methods,
                  frequentist_OLRE_only_methods,
@@ -88,49 +88,68 @@ fit_methods <- c(frequentist_no_OLRE_methods,
                  paste0(bayesian_both_methods, "_no_OLRE"),
                  paste0(bayesian_both_methods, "_OLRE"))
 
-method_to_sdm <- c(glmer          = "SDM.1",
-                   glmmTMB        = "SDM.2",
-                   spaMM          = "SDM.3",
-                   GLMMadaptive   = "SDM.4",
-                   brms           = "SDM.5",
-                   inla           = "SDM.6",
-                   nimble         = "SDM.7",
-                   jags           = "SDM.8",
-                   glmrob         = "SDM.9",
-                   quasi_poisson  = "SDM.10",
-                   quasi_binomial = "SDM.10",
-                   gamm           = "SDM.11")
+method_to_sdm <- c(SDM1      = "SDM.1",
+                   SDM2     = "SDM.2",
+                   SDM3     = "SDM.3",
+                   SDM4     = "SDM.4",
+                   SDM5     = "SDM.5",
+                   SDM6     = "SDM.6",
+                   SDM7     = "SDM.7",
+                   SDM8     = "SDM.8",
+                   SDM9     = "SDM.9",
+                   SDM10_QP = "SDM.10",
+                   SDM10_QB = "SDM.10",
+                   SDM11    = "SDM.11")
 
-method_compatibility <- list(glmer        = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             glmmTMB      = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             spaMM        = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             GLMMadaptive = c("poisson",
-                                              "bernoulli_probit", "bernoulli_logit"),
-                             gamm         = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit"),
-                             brms         = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             inla         = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             nimble       = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             jags         = c("gaussian", "poisson",
-                                              "bernoulli_probit", "bernoulli_logit",
-                                              "bernoulli_cloglog"),
-                             glmrob       = c("gaussian", "poisson",
-                                              "bernoulli_logit"),
-                             quasi_poisson  = c("poisson"),
-                             quasi_binomial = c("bernoulli_probit", "bernoulli_logit",
-                                                "bernoulli_cloglog"))
+method_compatibility <- list(SDM1     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM2     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit",
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM3     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM4     = c("poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit"),
+                             SDM5     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit"),
+                             SDM6     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM7     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM8     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM9     = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM10_QP = c("poisson"),
+                             SDM10_QB = c("bernoulli_probit", 
+                                          "bernoulli_logit",
+                                          "bernoulli_cloglog"),
+                             SDM11    = c("gaussian", 
+                                          "poisson",
+                                          "bernoulli_logit"))
 
 is_olre_variant <- function(method_name) {
   (grepl("_OLRE$", method_name) && !grepl("_no_OLRE$", method_name)) ||
@@ -182,7 +201,7 @@ get_family <- function(model_type) {
 
 ## SDM.1 #######################################################################
 
-fit_glm_glmer_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM1 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -232,7 +251,7 @@ fit_glm_glmer_model <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.2 #######################################################################
 
-fit_glmmTMB_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM2 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -270,7 +289,7 @@ fit_glmmTMB_model <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.3 • #####################################################################
 
-fit_spaMM_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM3 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -334,7 +353,7 @@ fit_spaMM_model <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.4 #######################################################################
 
-fit_GLMMadaptive_model <- function(Y, X1, model_type) {
+fit_SDM4 <- function(Y, X1, model_type) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -380,7 +399,7 @@ fit_GLMMadaptive_model <- function(Y, X1, model_type) {
 
 ## SDM.5 #######################################################################
 
-fit_brms_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM5 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -450,7 +469,7 @@ fit_brms_model <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.6 #######################################################################
 
-fit_inla_model <- function(Y, X1, model_type, use_OLRE = TRUE) {
+fit_SDM6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
   
   site_id_numeric <- seq_along(Y)
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id_numeric)
@@ -520,7 +539,7 @@ fit_inla_model <- function(Y, X1, model_type, use_OLRE = TRUE) {
 
 ## SDM.7 #######################################################################
 
-fit_nimble_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM7 <- function(Y, X1, model_type, use_OLRE) {
   
   n_obs           <- length(Y)
   site_id_numeric <- seq_len(n_obs)
@@ -713,7 +732,7 @@ fit_nimble_model <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.8 #######################################################################
 
-fit_jags_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM8 <- function(Y, X1, model_type, use_OLRE) {
   
   n_obs           <- length(Y)
   site_id_numeric <- seq_len(n_obs)
@@ -877,7 +896,7 @@ fit_jags_model <- function(Y, X1, model_type, use_OLRE) {
   
   Nchains <- 3
   
-  jags_out <- runMCMC_btadjust(MCMC_language = "Jags",
+  jags_out <- runMCMC_btadjust(MCMC_language = "SDM8",
                                code          = jags_model,
                                data          = jags_data,
                                inits         = lapply(1:Nchains, make_inits),
@@ -920,7 +939,7 @@ fit_jags_model <- function(Y, X1, model_type, use_OLRE) {
 
 ## SDM.9 #######################################################################
 
-fit_glmrob_model <- function(Y, X1, model_type) {
+fit_SDM9 <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
@@ -942,7 +961,7 @@ fit_glmrob_model <- function(Y, X1, model_type) {
 
 ## SDM.10 ######################################################################
 
-fit_quasi_poisson_model <- function(Y, X1, model_type) {
+fit_SDM10_QP <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
@@ -957,7 +976,7 @@ fit_quasi_poisson_model <- function(Y, X1, model_type) {
        converged = fit$converged)
 }
 
-fit_quasi_binomial_model <- function(Y, X1, model_type) {
+fit_SDM10_QB <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
@@ -974,7 +993,7 @@ fit_quasi_binomial_model <- function(Y, X1, model_type) {
 
 ## SDM.11 ######################################################################
 
-fit_gamm_model <- function(Y, X1, model_type, use_OLRE) {
+fit_SDM11 <- function(Y, X1, model_type, use_OLRE) {
   
   site_id <- factor(seq_along(Y))
   data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
@@ -1090,18 +1109,18 @@ fit_model <- function(Y, X1, model_type, method) {
   }
   
   sub_result <- switch(base_method,
-                       "quasi_poisson"  = fit_quasi_poisson_model(Y, X1, model_type),
-                       "quasi_binomial" = fit_quasi_binomial_model(Y, X1, model_type),
-                       "glmrob"         = fit_glmrob_model(Y, X1, model_type),
-                       "glmer"          = fit_glm_glmer_model(Y, X1, model_type, use_OLRE),
-                       "glmmTMB"        = fit_glmmTMB_model(Y, X1, model_type, use_OLRE),
-                       "GLMMadaptive"   = fit_GLMMadaptive_model(Y, X1, model_type),
-                       "gamm"           = fit_gamm_model(Y, X1, model_type, use_OLRE),
-                       "spaMM"          = fit_spaMM_model(Y, X1, model_type, use_OLRE),
-                       "nimble"         = fit_nimble_model(Y, X1, model_type, use_OLRE),
-                       "jags"           = fit_jags_model(Y, X1, model_type, use_OLRE),
-                       "brms"           = fit_brms_model(Y, X1, model_type, use_OLRE),
-                       "inla"           = fit_inla_model(Y, X1, model_type, use_OLRE),
+                       "SDM1"     = fit_SDM1(Y, X1, model_type, use_OLRE),
+                       "SDM2"     = fit_SDM2(Y, X1, model_type, use_OLRE),
+                       "SDM3"     = fit_SDM3(Y, X1, model_type, use_OLRE),
+                       "SDM4"     = fit_SDM4(Y, X1, model_type),
+                       "SDM5"     = fit_SDM5(Y, X1, model_type, use_OLRE),
+                       "SDM6"     = fit_SDM6(Y, X1, model_type, use_OLRE),
+                       "SDM7"     = fit_SDM7(Y, X1, model_type, use_OLRE),
+                       "SDM8"     = fit_SDM8(Y, X1, model_type, use_OLRE),
+                       "SDM9"     = fit_SDM9(Y, X1, model_type),
+                       "SDM10-QP" = fit_SDM10_QP(Y, X1, model_type),
+                       "SDM10-QB" = fit_SDM10_QB(Y, X1, model_type),
+                       "SDM11"    = fit_SDM11(Y, X1, model_type, use_OLRE),
                        list(error_msg = paste("Method", base_method, "not implemented")))
   
   result           <- modifyList(result, sub_result)
