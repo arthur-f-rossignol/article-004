@@ -138,8 +138,7 @@ initialize_results <- function(p,
        psrf_alpha            = NA_real_,
        psrf_beta             = NA_real_,
        psrf_max              = NA_real_,
-       computation_time      = NA_real_,
-       error_message         = NA_character_)
+       computation_time      = NA_real_)
 }
 
 ## JSDM.1 ######################################################################
