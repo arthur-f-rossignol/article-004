@@ -88,10 +88,6 @@ get_magnitude_levels <- function(data_model) {
 
 compute_bias_magnitude <- function(estimates, true_value, data_model) {
   
-  if (length(estimates) < 2 || all(is.na(estimates))) {
-    return("")
-  }
-  
   pop <- estimates - true_value
   pop <- pop[is.finite(pop)]
   
@@ -167,14 +163,14 @@ d %>%
             RMSRE = compute_RMSRE(coef_est, 
                                   coef_se,
                                   beta_true),
-            bias_sign = compute_bias_significance(coef_est, 
-                                                  beta_true),
-            bias_magn = compute_bias_magnitude(coef_est, 
-                                               beta_true, 
-                                               first(data_model)),
-            CR_sign = compute_CR_significance(beta_true,
-                                              coef_est,
-                                              coef_se),
+            bias_significance = compute_bias_significance(coef_est, 
+                                                          beta_true),
+            bias_magnitude = compute_bias_magnitude(coef_est, 
+                                                    beta_true, 
+                                                    data_model),
+            CR_significance = compute_CR_significance(beta_true,
+                                                      coef_est,
+                                                      coef_se),
             .groups = "drop")
 
 ################################################################################
