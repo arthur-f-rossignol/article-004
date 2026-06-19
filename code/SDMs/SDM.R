@@ -50,7 +50,7 @@ output_dir <- args[2]
 
 ## PARAMETERIZATION ############################################################
 
-n_sites     <- 1000       # number of sites
+n_obs       <- 1000       # number of sites
 sigma_error <- 1          # standard deviation for error terms in Gaussian model
 
 alpha_true <- 1           # intercept
@@ -65,30 +65,29 @@ data_models <- c("gaussian",               # Gaussian with identity link
                  "bernoulli_logit",        # Bernoulli with logit link
                  "bernoulli_cloglog")      # Bernoulli with cloglog link
 
-frequentist_no_OLRE_methods   <- c("SDM.9",
-                                   "SDM.10-QP",
-                                   "SDM.10-QB")
+fit_methods <- c("SDM.1_no_OLRE",
+                 "SDM.1_OLRE",
+                 "SDM.2_no_OLRE",
+                 "SDM.2_OLRE",
+                 "SDM.3_no_OLRE",
+                 "SDM.3_OLRE",
+                 "SDM.4",
+                 "SDM.5_no_OLRE",
+                 "SDM.5_OLRE",
+                 "SDM.6_no_OLRE",
+                 "SDM.6_OLRE",
+                 "SDM.7_no_OLRE",
+                 "SDM.7_OLRE",
+                 "SDM.8_no_OLRE",
+                 "SDM.8_OLRE",
+                 "SDM.9_no_OLRE",
+                 "SDM.9_OLRE",
+                 "SDM.10-QP",
+                 "SDM.10-QB",
+                 "SDM.11_no_OLRE",
+                 "SDM.11_OLRE")
 
-frequentist_OLRE_only_methods <- c("SDM.4")
-
-frequentist_both_methods <- c("SDM.1",
-                              "SDM.2",
-                              "SDM.3",
-                              "SDM.11")
-
-bayesian_both_methods <- c("SDM.5",
-                           "SDM.6",
-                           "SDM.7",
-                           "SDM.8")
-
-fit_methods <- c(frequentist_no_OLRE_methods,
-                 frequentist_OLRE_only_methods,
-                 paste0(frequentist_both_methods, "_no_OLRE"),
-                 paste0(frequentist_both_methods, "_OLRE"),
-                 paste0(bayesian_both_methods, "_no_OLRE"),
-                 paste0(bayesian_both_methods, "_OLRE"))
-
-method_to_sdm <- c(SDM.1      = "SDM.1",
+method_to_sdm <- c(SDM.1     = "SDM.1",
                    SDM.2     = "SDM.2",
                    SDM.3     = "SDM.3",
                    SDM.4     = "SDM.4",
@@ -102,54 +101,54 @@ method_to_sdm <- c(SDM.1      = "SDM.1",
                    SDM.11    = "SDM.11")
 
 method_compatibility <- list(SDM.1     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.2     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit",
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit",
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.3     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.4     = c("poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit"),
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit"),
                              SDM.5     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit"),
                              SDM.6     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.7     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.8     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.9     = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "poisson",
+                                           "bernoulli_probit", 
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.10_QP = c("poisson"),
                              SDM.10_QB = c("bernoulli_probit", 
-                                          "bernoulli_logit",
-                                          "bernoulli_cloglog"),
+                                           "bernoulli_logit",
+                                           "bernoulli_cloglog"),
                              SDM.11    = c("gaussian", 
-                                          "poisson",
-                                          "bernoulli_logit"))
+                                           "poisson",
+                                           "bernoulli_logit"))
 
 is_olre_variant <- function(method_name) {
   (grepl("_OLRE$", method_name) && !grepl("_no_OLRE$", method_name)) ||
@@ -170,21 +169,28 @@ is_method_compatible <- function(method_name, data_model) {
 ## DATA GENERATION #############################################################
 
 generate_covariates <- function(n, seed) {
+  
   set.seed(seed)
+  
   X1 <- rnorm(n, 0, 1)
   X2 <- rnorm(n, 0, 1)
+  
   return(list(X1 = X1, X2 = X2))
 }
 
 generate_data <- function(n, X1, X2, model_type, seed) {
+  
   set.seed(seed)
+  
   eta <- alpha_true + beta_true * X1 + gamma_true * X2
+  
   Y <- switch(model_type,
               "gaussian"          = rnorm(n, eta, sigma_error),
               "poisson"           = rpois(n, exp(eta)),
               "bernoulli_probit"  = rbinom(n, 1, pnorm(eta)),
               "bernoulli_logit"   = rbinom(n, 1, plogis(eta)),
               "bernoulli_cloglog" = rbinom(n, 1, 1 - exp(-exp(eta))))
+  
   return(Y)
 }
 
@@ -203,16 +209,16 @@ get_family <- function(model_type) {
 
 fit_SDM.1 <- function(Y, X1, model_type, use_OLRE) {
   
-  site_id <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
+  obs_id <- factor(seq_along(Y))
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   family_spec <- get_family(model_type)
   
   if (use_OLRE) {
     if (model_type == "gaussian") {
-      fit <- lmer(Y ~ X1 + (1 | site_id), data = data_df)
+      fit <- lmer(Y ~ X1 + (1 | obs_id), data = data_df)
     } else {
-      fit <- glmer(Y ~ X1 + (1 | site_id), family = family_spec, data = data_df)
+      fit <- glmer(Y ~ X1 + (1 | obs_id), family = family_spec, data = data_df)
     }
   } else {
     if (model_type == "gaussian") {
@@ -230,7 +236,7 @@ fit_SDM.1 <- function(Y, X1, model_type, use_OLRE) {
                    beta_est  = summary_fit$coefficients[2, 1],
                    beta_SE   = summary_fit$coefficients[2, 2])
     if (inherits(fit, "lmerMod") || inherits(fit, "glmerMod")) {
-      result$sigma2_est <- summary_fit$varcor$site_id[1]
+      result$sigma2_est <- summary_fit$varcor$obs_id[1]
       ci <- confint(fit, parm = "theta_", method = "Wald", quiet = TRUE)
       theta_est <- sqrt(result$sigma2_est)
       theta_se  <- (ci[1, 2] - ci[1, 1]) / (2 * 1.96)
@@ -253,13 +259,13 @@ fit_SDM.1 <- function(Y, X1, model_type, use_OLRE) {
 
 fit_SDM.2 <- function(Y, X1, model_type, use_OLRE) {
   
-  site_id <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
+  obs_id <- factor(seq_along(Y))
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   family_spec <- get_family(model_type)
   
   if (use_OLRE) {
-    fit <- glmmTMB(Y ~ X1 + (1 | site_id), family = family_spec, data = data_df)
+    fit <- glmmTMB(Y ~ X1 + (1 | obs_id), family = family_spec, data = data_df)
   } else {
     fit <- glmmTMB(Y ~ X1, family = family_spec, data = data_df)
   }
@@ -271,7 +277,7 @@ fit_SDM.2 <- function(Y, X1, model_type, use_OLRE) {
                  beta_SE   = fit_summary$coefficients$cond[2, 2])
   
   if (use_OLRE) {
-    result$sigma2_est <- fit_summary$varcor$cond$site_id[1]
+    result$sigma2_est <- fit_summary$varcor$cond$obs_id[1]
     ci <- confint(fit, parm = "theta_", method = "Wald")
     if (nrow(ci) > 0) {
       log_sd_est <- log(sqrt(result$sigma2_est))
@@ -287,12 +293,12 @@ fit_SDM.2 <- function(Y, X1, model_type, use_OLRE) {
   return(result)
 }
 
-## SDM.3 • #####################################################################
+## SDM.3 #######################################################################
 
 fit_SDM.3 <- function(Y, X1, model_type, use_OLRE) {
   
-  site_id <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
+  obs_id <- factor(seq_along(Y))
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   get_family_spaMM <- function(model_type) {
     switch(model_type,
@@ -300,14 +306,13 @@ fit_SDM.3 <- function(Y, X1, model_type, use_OLRE) {
            "poisson"           = poisson(),
            "bernoulli_probit"  = binomial(link = "probit"),
            "bernoulli_logit"   = binomial(link = "logit"),
-           "bernoulli_cloglog" = binomial(link = "cloglog"),
-           NULL)
+           "bernoulli_cloglog" = binomial(link = "cloglog"))
   }
   
   family_spec <- get_family_spaMM(model_type)
   
   if (use_OLRE) {
-    fit <- fitme(Y ~ X1 + (1 | site_id), family = family_spec, data = data_df)
+    fit <- fitme(Y ~ X1 + (1 | obs_id), family = family_spec, data = data_df)
     
     fixed_coefs <- fixef(fit)
     fit_summary <- summary(fit, verbose = FALSE)
@@ -321,8 +326,8 @@ fit_SDM.3 <- function(Y, X1, model_type, use_OLRE) {
     
     lambda <- VarCorr(fit)
     if (!is.null(lambda) && length(lambda) > 0) {
-      if ("site_id" %in% names(lambda)) {
-        result$sigma2_est <- as.numeric(lambda[["site_id"]])
+      if ("obs_id" %in% names(lambda)) {
+        result$sigma2_est <- as.numeric(lambda[["obs_id"]])
       } else if (length(lambda) > 0) {
         result$sigma2_est <- as.numeric(lambda[[1]])
       }
@@ -355,22 +360,21 @@ fit_SDM.3 <- function(Y, X1, model_type, use_OLRE) {
 
 fit_SDM.4 <- function(Y, X1, model_type) {
   
-  site_id <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
+  obs_id <- factor(seq_along(Y))
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   get_family_GLMMadaptive <- function(model_type) {
     switch(model_type,
            "gaussian"         = gaussian(),
            "poisson"          = poisson(),
            "bernoulli_probit" = binomial(link = "probit"),
-           "bernoulli_logit"  = binomial(link = "logit"),
-           NULL)
+           "bernoulli_logit"  = binomial(link = "logit"))
   }
   
   family_spec <- get_family_GLMMadaptive(model_type)
   
   fit <- mixed_model(fixed  = Y ~ X1,
-                     random = ~ 1 | site_id,
+                     random = ~ 1 | obs_id,
                      data   = data_df,
                      family = family_spec)
   
@@ -383,16 +387,9 @@ fit_SDM.4 <- function(Y, X1, model_type) {
                  beta_SE   = se_fixed[2],
                  converged = fit$converged)
   
-  D_mat <- fit$D
-  if (!is.null(D_mat) && length(D_mat) > 0) {
-    result$sigma2_est <- D_mat[1, 1]
-    vcov_all <- vcov(fit, parm = "var-cov")
-    if (!is.null(vcov_all) && length(vcov_all) > 0) {
-      result$sigma2_SE <- sqrt(vcov_all[1, 1])
-    } else {
-      result$sigma2_SE <- NA
-    }
-  }
+  result$sigma2_est <- fit$D[1, 1]
+  vcov_all <- vcov(fit, parm = "var-cov")
+  result$sigma2_SE <- sqrt(vcov_all[1, 1])
   
   return(result)
 }
@@ -401,8 +398,8 @@ fit_SDM.4 <- function(Y, X1, model_type) {
 
 fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
   
-  site_id <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
+  obs_id <- factor(seq_along(Y))
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   get_family_brms <- function(model_type) {
     switch(model_type,
@@ -410,14 +407,13 @@ fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
            "poisson"           = poisson(link = "log"),
            "bernoulli_probit"  = bernoulli(link = "probit"),
            "bernoulli_logit"   = bernoulli(link = "logit"),
-           "bernoulli_cloglog" = bernoulli(link = "cloglog"),
-           NULL)
+           "bernoulli_cloglog" = bernoulli(link = "cloglog"))
   }
   
   family_spec <- get_family_brms(model_type)
   
   if (use_OLRE) {
-    formula_brms <- bf(Y ~ X1 + (1 | site_id))
+    formula_brms <- bf(Y ~ X1 + (1 | obs_id))
   } else {
     formula_brms <- bf(Y ~ X1)
   }
@@ -434,12 +430,12 @@ fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
              family  = family_spec,
              prior   = prior_spec,
              chains  = 3,
-             iter    = 20000,
+             iter    = 40000,
              warmup  = 20000,
              thin    = 5,
              cores   = 3,
              control = list(adapt_delta = 0.95, max_treedepth = 12),
-             seed    = 123)
+             seed    = seed)
   
   post_summary <- posterior_summary(fit, pars = c("b_Intercept", "b_X1"))
   
@@ -447,7 +443,7 @@ fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
                  alpha_SE  = post_summary["b_Intercept", "Est.Error"],
                  beta_est  = post_summary["b_X1", "Estimate"],
                  beta_SE   = post_summary["b_X1", "Est.Error"],
-                 converged = TRUE)
+                 converged = NA_character_)
   
   rhat_vals <- rhat(fit)
   if (any(rhat_vals > 1.1, na.rm = TRUE)) {
@@ -456,12 +452,10 @@ fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
   
   if (use_OLRE) {
     re_summary <- VarCorr(fit, summary = TRUE)
-    if (length(re_summary) > 0 && "site_id" %in% names(re_summary)) {
-      sd_site <- re_summary$site_id$sd[1, "Estimate"]
-      result$sigma2_est <- sd_site^2
-      sd_se <- re_summary$site_id$sd[1, "Est.Error"]
-      result$sigma2_SE <- 2 * sd_site * sd_se
-    }
+    sd_site <- re_summary$obs_id$sd[1, "Estimate"]
+    result$sigma2_est <- sd_site^2
+    sd_se <- re_summary$obs_id$sd[1, "Est.Error"]
+    result$sigma2_SE <- 2 * sd_site * sd_se
   }
   
   return(result)
@@ -471,8 +465,8 @@ fit_SDM.5 <- function(Y, X1, model_type, use_OLRE) {
 
 fit_SDM.6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
   
-  site_id_numeric <- seq_along(Y)
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id_numeric)
+  obs_id <- seq_along(Y)
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   get_family_inla <- function(model_type) {
     switch(model_type,
@@ -498,7 +492,7 @@ fit_SDM.6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
   link_spec   <- get_link_inla(model_type)
   
   if (use_OLRE) {
-    formula_inla <- Y ~ X1 + f(site_id, model = "iid")
+    formula_inla <- Y ~ X1 + f(obs_id, model = "iid")
   } else {
     formula_inla <- Y ~ X1
   }
@@ -524,14 +518,12 @@ fit_SDM.6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
   }
   
   if (use_OLRE && !is.null(fit$summary.hyperpar)) {
-    hyper_summary <- fit$summary.hyperpar
-    precision_row <- grep("Precision for site_id", rownames(hyper_summary))
-    if (length(precision_row) > 0) {
-      precision_mean    <- hyper_summary[precision_row, "mean"]
-      precision_sd      <- hyper_summary[precision_row, "sd"]
-      result$sigma2_est <- 1 / precision_mean
-      result$sigma2_SE  <- precision_sd / (precision_mean^2)
-    }
+    hyper_summary     <- fit$summary.hyperpar
+    precision_row     <- grep("Precision for obs_id", rownames(hyper_summary))
+    precision_mean    <- hyper_summary[precision_row, "mean"]
+    precision_sd      <- hyper_summary[precision_row, "sd"]
+    result$sigma2_est <- 1 / precision_mean
+    result$sigma2_SE  <- precision_sd / (precision_mean^2)
   }
   
   return(result)
@@ -541,8 +533,8 @@ fit_SDM.6 <- function(Y, X1, model_type, use_OLRE = TRUE) {
 
 fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
   
-  n_obs           <- length(Y)
-  site_id_numeric <- seq_len(n_obs)
+  n_obs  <- length(Y)
+  obs_id <- seq_len(n_obs)
   
   if (model_type == "gaussian") {
     nimble_code <- nimbleCode({
@@ -568,7 +560,7 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
           site_effect[j] ~ dnorm(0, sd = sigma)
         }
         for(i in 1:n_obs) {
-          probit(p[i]) <- alpha + beta * X1[i] + site_effect[site_id[i]]
+          probit(p[i]) <- alpha + beta * X1[i] + site_effect[obs_id[i]]
           Y[i] ~ dbern(p[i])
         }
       })
@@ -594,7 +586,7 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
           site_effect[j] ~ dnorm(0, sd = sigma)
         }
         for(i in 1:n_obs) {
-          logit(p[i]) <- alpha + beta * X1[i] + site_effect[site_id[i]]
+          logit(p[i]) <- alpha + beta * X1[i] + site_effect[obs_id[i]]
           Y[i] ~ dbern(p[i])
         }
       })
@@ -620,7 +612,7 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
           site_effect[j] ~ dnorm(0, sd = sigma)
         }
         for(i in 1:n_obs) {
-          p[i] <- 1 - exp(-exp(alpha + beta * X1[i] + site_effect[site_id[i]]))
+          p[i] <- 1 - exp(-exp(alpha + beta * X1[i] + site_effect[obs_id[i]]))
           Y[i] ~ dbern(p[i])
         }
       })
@@ -646,7 +638,7 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
           site_effect[j] ~ dnorm(0, sd = sigma)
         }
         for(i in 1:n_obs) {
-          log(lambda[i]) <- alpha + beta * X1[i] + site_effect[site_id[i]]
+          log(lambda[i]) <- alpha + beta * X1[i] + site_effect[obs_id[i]]
           Y[i] ~ dpois(lambda[i])
         }
       })
@@ -662,13 +654,13 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
     }
   }
   
-  nimble_data <- list(Y       = Y,
-                      X1      = X1,
-                      site_id = site_id_numeric)
+  nimble_data <- list(Y      = Y,
+                      X1     = X1,
+                      obs_id = obs_id)
   
   nimble_constants <- list(n_obs = n_obs)
   
-  nimble_inits <- function(use_OLRE, n_obs) {
+  nimble_inits <- function(chain_id) {
     inits <- list(alpha = rnorm(1, 0, 1),
                   beta  = rnorm(1, 0, 1))
     if (model_type == "gaussian") {
@@ -682,9 +674,8 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
   }
   
   nimble_params <- c("alpha", "beta")
-  if (use_OLRE) {
-    nimble_params <- c(nimble_params, "sigma")
-  } else if (model_type == "gaussian") {
+  
+  if (use_OLRE || model_type == "gaussian") {
     nimble_params <- c(nimble_params, "sigma")
   }
   
@@ -693,8 +684,7 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
   nimble_out <- runMCMC_btadjust(code         = nimble_code,
                                  constants    = nimble_constants,
                                  data         = nimble_data,
-                                 inits        = lapply(1:Nchains, function(x)
-                                 { nimble_inits(use_OLRE, n_obs) }),
+                                 inits        = lapply(1:Nchains, nimble_inits),
                                  params       = nimble_params,
                                  niter.min    = 10000,
                                  niter.max    = Inf,
@@ -705,7 +695,7 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
                                  Nchains      = Nchains,
                                  conv.max     = 1.05,
                                  neff.min     = 5000,
-                                 control      = list(time.max                   = 3600,
+                                 control      = list(time.max                   = 36000,
                                                      round.thinmult             = TRUE,
                                                      print.diagnostics          = TRUE,
                                                      Ncycles.target             = 2,
@@ -713,18 +703,18 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
                                                      convtype                   = 'Gelman'),
                                  control.MCMC = list(parallelize = TRUE))
   
-  combined_samples <- do.call(rbind, nimble_out)
-  attrs            <- attributes(nimble_out)
+  samples <- do.call(rbind, nimble_out)
+  attrs   <- attributes(nimble_out)
   
-  result <- list(alpha_est = mean(combined_samples[, "alpha"]),
-                 alpha_SE  = sd(combined_samples[, "alpha"]),
-                 beta_est  = mean(combined_samples[, "beta"]),
-                 beta_SE   = sd(combined_samples[, "beta"]),
+  result <- list(alpha_est = mean(samples[, "alpha"]),
+                 alpha_SE  = sd(samples[, "alpha"]),
+                 beta_est  = mean(samples[, "beta"]),
+                 beta_SE   = sd(samples[, "beta"]),
                  converged = attrs$final.params$converged)
   
-  if (use_OLRE && "sigma" %in% colnames(combined_samples)) {
-    result$sigma2_est = mean(combined_samples[, "sigma"]^2)
-    result$sigma2_SE  = sd(combined_samples[, "sigma"]^2)
+  if (use_OLRE) {
+    result$sigma2_est <- mean(samples[, "sigma"]^2)
+    result$sigma2_SE  <- sd(samples[, "sigma"]^2)
   }
   
   return(result)
@@ -734,131 +724,129 @@ fit_SDM.7 <- function(Y, X1, model_type, use_OLRE) {
 
 fit_SDM.8 <- function(Y, X1, model_type, use_OLRE) {
   
-  n_obs           <- length(Y)
-  site_id_numeric <- seq_len(n_obs)
+  n_obs  <- length(Y)
+  obs_id <- seq_len(n_obs)
   
   jags_models <- list()
   
   jags_models$gaussian_no_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    tau   ~ dgamma(0.001, 0.001)
-    sigma <- 1 / sqrt(tau)
-    sigma2 <- sigma^2
-    for (i in 1:n_obs) {
-      mu[i] <- alpha + beta * X1[i]
-      Y[i] ~ dnorm(mu[i], tau)
-    }
-  }"
-  
-  jags_models$gaussian_OLRE <- jags_models$gaussian_no_OLRE
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      tau ~ dgamma(0.001, 0.001)
+      sigma <- 1 / sqrt(tau)
+      sigma2 <- sigma^2
+      for (i in 1:n_obs) {
+        mu[i] <- alpha + beta * X1[i]
+        Y[i] ~ dnorm(mu[i], tau)
+      }
+    }"
   
   jags_models$bernoulli_probit_no_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    for (i in 1:n_obs) {
-      z[i] <- alpha + beta * X1[i]
-      p[i] <- phi(z[i])
-      Y[i] ~ dbern(p[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      for (i in 1:n_obs) {
+        z[i] <- alpha + beta * X1[i]
+        p[i] <- phi(z[i])
+        Y[i] ~ dbern(p[i])
+      }
+    }"
   
   jags_models$bernoulli_probit_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    tau ~ dgamma(0.001, 0.001)
-    sigma <- 1 / sqrt(tau)
-    sigma2 <- sigma^2
-    for (j in 1:n_obs) {
-      site_effect[j] ~ dnorm(0, tau)
-    }
-    for (i in 1:n_obs) {
-      z[i] <- alpha + beta * X1[i] + site_effect[site_id[i]]
-      p[i] <- phi(z[i])
-      Y[i] ~ dbern(p[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      tau ~ dgamma(0.001, 0.001)
+      sigma <- 1 / sqrt(tau)
+      sigma2 <- sigma^2
+      for (j in 1:n_obs) {
+        obs_effect[j] ~ dnorm(0, tau)
+      }
+      for (i in 1:n_obs) {
+        z[i] <- alpha + beta * X1[i] + obs_effect[obs_id[i]]
+        p[i] <- phi(z[i])
+        Y[i] ~ dbern(p[i])
+      }
+    }"
   
   jags_models$bernoulli_logit_no_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    for (i in 1:n_obs) {
-      logit(p[i]) <- alpha + beta * X1[i]
-      Y[i] ~ dbern(p[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      for (i in 1:n_obs) {
+        logit(p[i]) <- alpha + beta * X1[i]
+        Y[i] ~ dbern(p[i])
+      }
+    }"
   
   jags_models$bernoulli_logit_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    tau ~ dgamma(0.001, 0.001)
-    sigma <- 1 / sqrt(tau)
-    sigma2 <- sigma^2
-    for (j in 1:n_obs) {
-      site_effect[j] ~ dnorm(0, tau)
-    }
-    for (i in 1:n_obs) {
-      logit(p[i]) <- alpha + beta * X1[i] + site_effect[site_id[i]]
-      Y[i] ~ dbern(p[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      tau ~ dgamma(0.001, 0.001)
+      sigma <- 1 / sqrt(tau)
+      sigma2 <- sigma^2
+      for (j in 1:n_obs) {
+        obs_effect[j] ~ dnorm(0, tau)
+      }
+      for (i in 1:n_obs) {
+        logit(p[i]) <- alpha + beta * X1[i] + obs_effect[obs_id[i]]
+        Y[i] ~ dbern(p[i])
+      }
+    }"
   
   jags_models$bernoulli_cloglog_no_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    for (i in 1:n_obs) {
-      p[i] <- 1 - exp(-exp(alpha + beta * X1[i]))
-      Y[i] ~ dbern(p[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      for (i in 1:n_obs) {
+        p[i] <- 1 - exp(-exp(alpha + beta * X1[i]))
+        Y[i] ~ dbern(p[i])
+      }
+    }"
   
   jags_models$bernoulli_cloglog_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    tau ~ dgamma(0.001, 0.001)
-    sigma <- 1 / sqrt(tau)
-    sigma2 <- sigma^2
-    for (j in 1:n_obs) {
-      site_effect[j] ~ dnorm(0, tau)
-    }
-    for (i in 1:n_obs) {
-      p[i] <- 1 - exp(-exp(alpha + beta * X1[i] + site_effect[site_id[i]]))
-      Y[i] ~ dbern(p[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta ~ dnorm(0, 0.01)
+      tau ~ dgamma(0.001, 0.001)
+      sigma <- 1 / sqrt(tau)
+      sigma2 <- sigma^2
+      for (j in 1:n_obs) {
+        obs_effect[j] ~ dnorm(0, tau)
+      }
+      for (i in 1:n_obs) {
+        p[i] <- 1 - exp(-exp(alpha + beta * X1[i] + obs_effect[obs_id[i]]))
+        Y[i] ~ dbern(p[i])
+      }
+    }"
   
   jags_models$poisson_no_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    for (i in 1:n_obs) {
-      log(lambda[i]) <- alpha + beta * X1[i]
-      Y[i] ~ dpois(lambda[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta  ~ dnorm(0, 0.01)
+      for (i in 1:n_obs) {
+        log(lambda[i]) <- alpha + beta * X1[i]
+        Y[i] ~ dpois(lambda[i])
+      }
+    }"
   
   jags_models$poisson_OLRE <- "
-  model {
-    alpha ~ dnorm(0, 0.01)
-    beta  ~ dnorm(0, 0.01)
-    tau ~ dgamma(0.001, 0.001)
-    sigma <- 1 / sqrt(tau)
-    sigma2 <- sigma^2
-    for (j in 1:n_obs) {
-      site_effect[j] ~ dnorm(0, tau)
-    }
-    for (i in 1:n_obs) {
-      log(lambda[i]) <- alpha + beta * X1[i] + site_effect[site_id[i]]
-      Y[i] ~ dpois(lambda[i])
-    }
-  }"
+    model {
+      alpha ~ dnorm(0, 0.01)
+      beta  ~ dnorm(0, 0.01)
+      tau ~ dgamma(0.001, 0.001)
+      sigma <- 1 / sqrt(tau)
+      sigma2 <- sigma^2
+      for (j in 1:n_obs) {
+        obs_effect[j] ~ dnorm(0, tau)
+      }
+      for (i in 1:n_obs) {
+        log(lambda[i]) <- alpha + beta * X1[i] + obs_effect[obs_id[i]]
+        Y[i] ~ dpois(lambda[i])
+      }
+    }"
   
   model_key         <- paste0(model_type, ifelse(use_OLRE, "_OLRE", "_no_OLRE"))
   jags_model_string <- jags_models[[model_key]]
@@ -866,17 +854,15 @@ fit_SDM.8 <- function(Y, X1, model_type, use_OLRE) {
   jags_model <- tempfile(fileext = ".txt")
   writeLines(jags_model_string, jags_model)
   
-  jags_data <- list(Y       = as.numeric(Y),
-                    X1      = as.numeric(X1),
-                    site_id = as.integer(site_id_numeric),
-                    n_obs   = as.integer(n_obs))
+  jags_data <- list(Y      = as.numeric(Y),
+                    X1     = as.numeric(X1),
+                    obs_id = as.integer(obs_id),
+                    n_obs  = as.integer(n_obs))
   
   jags_params <- c("alpha", "beta")
-  if (model_type == "gaussian") {
+  
+  if (use_OLRE || model_type == "gaussian") {
     jags_params <- c(jags_params, "sigma2")
-  }
-  if (use_OLRE) {
-    jags_params <- unique(c(jags_params, "sigma2"))
   }
   
   make_inits <- function(chain_id) {
@@ -910,13 +896,13 @@ fit_SDM.8 <- function(Y, X1, model_type, use_OLRE) {
                                Nchains       = Nchains,
                                conv.max      = 1.05,
                                neff.min      = 5000,
-                               control       = list(time.max                   = 3600,
+                               control       = list(time.max                   = 36000,
                                                     round.thinmult             = TRUE,
                                                     print.diagnostics          = TRUE,
                                                     Ncycles.target             = 2,
                                                     check.convergence.firstrun = TRUE,
                                                     convtype                   = 'Gelman'),
-                                control.MCMC = list(parallelize = TRUE))
+                               control.MCMC  = list(parallelize = TRUE))
   
   combined_samples <- do.call(rbind, jags_out)
   attrs            <- attributes(jags_out)
@@ -961,26 +947,13 @@ fit_SDM.9 <- function(Y, X1, model_type) {
 
 ## SDM.10 ######################################################################
 
-fit_SDM.10_QP <- function(Y, X1, model_type) {
+fit_SDM.10 <- function(Y, X1, model_type) {
   
   data_df <- data.frame(Y = Y, X1 = X1)
   
-  fit <- glm(Y ~ X1, family = quasipoisson(), data = data_df)
+  family_spec <- if (model_type == "poisson") quasipoisson() else quasibinomial()
   
-  coef_summary <- summary(fit)$coefficients
-  
-  list(alpha_est = coef_summary["(Intercept)", "Estimate"],
-       alpha_SE  = coef_summary["(Intercept)", "Std. Error"],
-       beta_est  = coef_summary["X1", "Estimate"],
-       beta_SE   = coef_summary["X1", "Std. Error"],
-       converged = fit$converged)
-}
-
-fit_SDM.10_QB <- function(Y, X1, model_type) {
-  
-  data_df <- data.frame(Y = Y, X1 = X1)
-  
-  fit <- glm(Y ~ X1, family = quasibinomial(), data = data_df)
+  fit <- glm(Y ~ X1, family = family_spec, data = data_df)
   
   coef_summary <- summary(fit)$coefficients
   
@@ -995,16 +968,15 @@ fit_SDM.10_QB <- function(Y, X1, model_type) {
 
 fit_SDM.11 <- function(Y, X1, model_type, use_OLRE) {
   
-  site_id <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, site_id = site_id)
+  obs_id <- factor(seq_along(Y))
+  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
   
   get_family_mgcv <- function(model_type) {
     switch(model_type,
            "gaussian"         = gaussian(),
            "poisson"          = poisson(),
            "bernoulli_probit" = binomial(link = "probit"),
-           "bernoulli_logit"  = binomial(link = "logit"),
-           NULL)
+           "bernoulli_logit"  = binomial(link = "logit"))
   }
   
   family_spec    <- get_family_mgcv(model_type)
@@ -1026,7 +998,7 @@ fit_SDM.11 <- function(Y, X1, model_type, use_OLRE) {
   
   if (use_OLRE) {
     fit <- gamm(formula = smooth_formula,
-                random  = list(site_id = ~ 1),
+                random  = list(obs_id = ~ 1),
                 family  = family_spec,
                 data    = data_df)
     
@@ -1040,23 +1012,11 @@ fit_SDM.11 <- function(Y, X1, model_type, use_OLRE) {
                    edf_X1    = unname(gam_summary$edf[1]),
                    converged = TRUE)
     
-    if (!is.null(fit$lme)) {
-      vc <- VarCorr(fit$lme)
-      if ("site_id" %in% rownames(vc)) {
-        result$sigma2_est <- as.numeric(vc["site_id", "Variance"])
-        int <- intervals(fit$lme, which = "var-cov")
-        if (!is.null(int$reStruct$site_id)) {
-          var_int <- int$reStruct$site_id
-          if (is.matrix(var_int) && nrow(var_int) > 0) {
-            result$sigma2_SE <- (var_int[1, 3] - var_int[1, 1]) / (2 * 1.96)
-          } else {
-            result$sigma2_SE <- NA
-          }
-        } else {
-          result$sigma2_SE <- NA
-        }
-      }
-    }
+    vc                <- VarCorr(fit$lme)
+    result$sigma2_est <- as.numeric(vc["obs_id", "Variance"])
+    int               <- intervals(fit$lme, which = "var-cov")
+    var_int           <- int$reStruct$obs_id
+    result$sigma2_SE. <- (var_int[1, 3] - var_int[1, 1]) / (2 * 1.96)
     
   } else {
     fit <- gam(formula = smooth_formula,
@@ -1118,10 +1078,9 @@ fit_model <- function(Y, X1, model_type, method) {
                        "SDM.7"     = fit_SDM.7(Y, X1, model_type, use_OLRE),
                        "SDM.8"     = fit_SDM.8(Y, X1, model_type, use_OLRE),
                        "SDM.9"     = fit_SDM.9(Y, X1, model_type),
-                       "SDM.10-QP" = fit_SDM.10_QP(Y, X1, model_type),
-                       "SDM.10-QB" = fit_SDM.10_QB(Y, X1, model_type),
-                       "SDM.11"    = fit_SDM.11(Y, X1, model_type, use_OLRE),
-                       list(error_msg = paste("Method", base_method, "not implemented")))
+                       "SDM.10-QP" = fit_SDM.10(Y, X1, model_type),
+                       "SDM.10-QB" = fit_SDM.10(Y, X1, model_type),
+                       "SDM.11"    = fit_SDM.11(Y, X1, model_type, use_OLRE))
   
   result           <- modifyList(result, sub_result)
   result$sdm_label <- unname(method_to_sdm[base_method])
@@ -1138,13 +1097,13 @@ run_single_replicate <- function(seed) {
   
   all_results <- list()
   
-  covariates <- generate_covariates(n_sites, seed)
+  covariates <- generate_covariates(n_obs, seed)
   X1         <- covariates$X1
   X2         <- covariates$X2
   
   for (data_model in data_models) {
     
-    Y <- generate_data(n_sites,
+    Y <- generate_data(n_obs,
                        X1,
                        X2,
                        data_model,
@@ -1163,7 +1122,9 @@ run_single_replicate <- function(seed) {
       }
       
       start_time <- Sys.time()
+      
       fit_result <- fit_model(Y, X1, data_model, method)
+      
       end_time   <- Sys.time()
       
       fit_result$fit_time <- as.numeric(difftime(end_time, start_time, units = "secs"))
@@ -1176,7 +1137,7 @@ run_single_replicate <- function(seed) {
   
   results <- list(seed       = seed,
                   timestamp  = Sys.time(),
-                  parameters = list(n_sites     = n_sites,
+                  parameters = list(n_obs     = n_obs,
                                     sigma_error = sigma_error),
                   results    = all_results)
   
@@ -1186,12 +1147,15 @@ run_single_replicate <- function(seed) {
 ## RUN #########################################################################
 
 start_time <- Sys.time()
+
 results    <- run_single_replicate(seed_value)
+
 end_time   <- Sys.time()
 
 results$total_time <- as.numeric(difftime(end_time, start_time, units = "secs"))
 
 output_file <- file.path(output_dir, sprintf("replicate_%06d.RData", seed_value))
+
 save(results, file = output_file)
 
 ################################################################################
