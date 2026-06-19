@@ -38,7 +38,7 @@
 
 `mgcv` 1.9-3
 
-`nlme`` 3.1-168
+`nlme` 3.1-168
 
 `GLMMadaptive` 0.9-7
 
