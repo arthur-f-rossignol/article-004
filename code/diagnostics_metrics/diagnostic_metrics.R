@@ -24,18 +24,13 @@ compute_CR <- function(estimates,
                        converged = NULL) {
   
   n <- length(estimates)
-  if (is.null(converged)) {
-    converged <- rep(TRUE, n)
-  }
 
   CI_lower <- estimates - 1.96 * SEs
   CI_upper <- estimates + 1.96 * SEs
 
-  covered <- ifelse(converged & !is.na(SEs),
-                    true_value >= CI_lower & true_value <= CI_upper,
-                    NA)
+  covered <- true_value >= CI_lower & true_value <= CI_upper)
   
-  mean(covered, na.rm = TRUE)
+  mean(covered)
 }
 
 ## ROOT MEAN SQUARE ERROR (RMSE) ###############################################
@@ -155,8 +150,7 @@ d %>%
   group_by(data_model, method) %>%
   summarise(CR = compute_CR(coef_est,
                             coef_se,
-                            beta_true,
-                            converged),
+                            beta_true),
             RMSE = compute_RMSE(coef_est, 
                                 beta_true),
             RMSRE = compute_RMSRE(coef_est, 
