@@ -225,8 +225,8 @@ load_data <- function(name) {
     
   } else if (name == "birds") {
     
-    spe <- read.csv('/path/to/datasets/datasets/birds/Birds_PA.csv')
-    env <- read.csv('/path/to/datasets/datasets/birds/Birds_Cov.csv')
+    spe <- read.csv('/path/to/datasets/birds/Birds_PA.csv')
+    env <- read.csv('/path/to/datasets/birds/Birds_Cov.csv')
     
     Y <- ifelse(as.matrix(spe) > 0, 1, 0)
     X <- data.matrix(env)
