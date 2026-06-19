@@ -600,7 +600,7 @@ compute_loglik_draws <- function(Y_test,
     if (is.null(dim(beta_coef))) {
       beta_coef <- matrix(beta_coef, nrow = 1)
     } else {
-      beta_coef <- t(beta_coef)  # P x S
+      beta_coef <- t(beta_coef)
     }
     beta_d <- rbind(posterior$beta0_draws[d, ], beta_coef)
     
