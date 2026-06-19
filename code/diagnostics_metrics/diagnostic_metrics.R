@@ -21,14 +21,15 @@ library(dplyr)
 compute_CR <- function(estimates,
                        SEs, 
                        true_value, 
-                       converged = NULL, 
-                       z = 1.96) {
+                       converged = NULL) {
   
   n <- length(estimates)
-  if (is.null(converged)) converged <- rep(TRUE, n)
+  if (is.null(converged)) {
+    converged <- rep(TRUE, n)
+  }
 
-  CI_lower <- estimates - z * SEs
-  CI_upper <- estimates + z * SEs
+  CI_lower <- estimates - 1.96 * SEs
+  CI_upper <- estimates + 1.96 * SEs
 
   covered <- ifelse(converged & !is.na(SEs),
                     true_value >= CI_lower & true_value <= CI_upper,
@@ -39,14 +40,17 @@ compute_CR <- function(estimates,
 
 ## ROOT MEAN SQUARE ERROR (RMSE) ###############################################
 
-compute_RMSE <- function(estimates, true_value) {
+compute_RMSE <- function(estimates, 
+                         true_value) {
   sqrt(mean((estimates - true_value)^2, na.rm = TRUE))
 }
 
 ## ROOT MEAN SQUARE RANDOM ERROR (RMSRE) #######################################
 
-compute_RMSRE <- function(estimates, ses, true_value) {
-  sqrt(mean((estimates - true_value)^2 + ses^2, na.rm = TRUE))
+compute_RMSRE <- function(estimates, 
+                          SEs,
+                          true_value) {
+  sqrt(mean((estimates - true_value)^2 + SEs^2, na.rm = TRUE))
 }
 
 ## BIAS SIGNIFICANCE ###########################################################
@@ -54,10 +58,6 @@ compute_RMSRE <- function(estimates, ses, true_value) {
 compute_bias_significance <- function(estimates, 
                                       true_value) {
   
-  if (length(estimates) < 2 || all(is.na(estimates))) {
-    return("")
-  }
-
   test <- summary(lmrob(estimates - true_value ~ 1,
                           data = as.data.frame(estimates)))$coefficients[4]
 
@@ -76,13 +76,13 @@ compute_bias_significance <- function(estimates,
 
 get_magnitude_levels <- function(data_model) {
   if (grepl("gaussian", data_model, ignore.case = TRUE)) {
-    c(0.2, 0.1, 0.05)
+    c(0.5, 0.1, 0.05)
   } else if (grepl("poisson", data_model, ignore.case = TRUE)) {
-    c(0.2, 0.1, 0.05)
+    c(0.5, 0.1, 0.05)
   } else if (grepl("bernoulli", data_model, ignore.case = TRUE)) {
-    c(0.2, 0.1, 0.05)
+    c(0.5, 0.1, 0.05)
   } else {
-    c(0.2, 0.1, 0.05)
+    c(0.5, 0.1, 0.05)
   }
 }
 
@@ -123,8 +123,7 @@ compute_bias_magnitude <- function(estimates, true_value, data_model) {
 
 compute_CR_significance <- function(estimates,
                                     SEs, 
-                                    true_value, 
-                                    target_CR = 0.05) {
+                                    true_value) {
 
   CI_lower <- estimates - 1.96 * SEs
   CI_upper <- estimates + 1.96 * SEs
@@ -135,8 +134,8 @@ compute_CR_significance <- function(estimates,
   set.seed(1)
   u <- runif(1)
 
-  crude <- pbinom(m.neg + m.pos - 1, size = N, prob = target_CR) +
-    u * dbinom(m.neg + m.pos, size = N, prob = target_CR)
+  crude <- pbinom(m.neg + m.pos - 1, size = N, prob = target_CR0.05) +
+    u * dbinom(m.neg + m.pos, size = N, prob = 0.05)
   test <- min(crude, 1 - crude) * 2
 
   if (test < 0.001) {
