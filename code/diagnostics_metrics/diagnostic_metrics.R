@@ -125,23 +125,16 @@ compute_bias_magnitude <- function(estimates, true_value, data_model) {
 
 ## COVERAGE RATE SIGNIFICANCE ##################################################
 
-compute_CR_significance <- function(true_value, 
-                                    CI_lower, 
-                                    CI_upper,
+compute_CR_significance <- function(estimates,
+                                    SEs, 
+                                    true_value, 
                                     target_CR = 0.05) {
-  
-  valid <- is.finite(CI_lower) & is.finite(CI_upper)
-  
-  lo <- CI_lower[valid]
-  hi <- CI_upper[valid]
-  
-  N  <- length(lo)
-  if (N < 1) {
-    return("")
-  }
 
-  m.neg <- sum(true_value < lo)
-  m.pos <- sum(true_value > hi)
+  CI_lower <- estimates - 1.96 * SEs
+  CI_upper <- estimates + 1.96 * SEs
+
+  m.neg <- sum(true_value < CI_lower)
+  m.pos <- sum(true_value > CI_upper)
 
   set.seed(1)
   u <- runif(1)
@@ -180,8 +173,8 @@ d %>%
                                                beta_true, 
                                                first(data_model)),
             CR_sign = compute_CR_significance(beta_true,
-                                              coef_est - 1.96 * coef_se,
-                                              coef_est + 1.96 * coef_se),
+                                              coef_est,
+                                              coef_se),
             .groups = "drop")
 
 ################################################################################
