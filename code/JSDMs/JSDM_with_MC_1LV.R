@@ -786,12 +786,11 @@ fit_JSDM.5 <- function(Y,
       }
     }"
 
-  jags_data <- list(
-    y        = Y, 
-    X        = X_mat,
-    n        = n_obs, 
-    p        = p_species, 
-    n_covars = n_covars)
+  jags_data <- list(y        = Y, 
+                    X        = X_mat,
+                    n        = n_obs, 
+                    p        = p_species, 
+                    n_covars = n_covars)
   if (num_lv > 0) {
     jags_data$num_lv <- num_lv
   }
