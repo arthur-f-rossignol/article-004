@@ -554,9 +554,7 @@ fit_JSDM.4 <- function(Y,
     }
   }
 
-  if (!is.null(attrs$final.params)) {
-    result$convergence <- attrs$final.params$converged
-  }
+  result$convergence <- attrs$final.params$converged
 
   result
 }
