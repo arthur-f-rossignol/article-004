@@ -774,9 +774,9 @@ fit_JSDM.5 <- function(Y,
     model {
       for(i in 1:n) {
         for(j in 1:p) {
-          eta[i,j] <- inprod(lambda[j,], W[i,]) + inprod(beta[j,], X[i,])
-          probit(p_y[i,j]) <- beta0[j] + eta[i,j]
-          y[i,j] ~ dbern(p_y[i,j])
+          eta[i, j] <- inprod(lambda[j, ], W[i, ]) + inprod(beta[j, ], X[i, ])
+          probit(p_y[i, j]) <- beta0[j] + eta[i, j]
+          y[i, j] ~ dbern(p_y[i, j])
         }
       }
       for(i in 1:n) {
@@ -787,27 +787,27 @@ fit_JSDM.5 <- function(Y,
       for(j in 1:p) {
         beta0[j] ~ dnorm(0, 0.1)
       }
-      for(i in 1:(num_lv-1)) {
-        for(j in (i+1):num_lv) {
-          lambda[i,j] <- 0
+      for(i in 1:(num_lv - 1)) {
+        for(j in (i + 1):num_lv) {
+          lambda[i, j] <- 0
         }
       }
       for(i in 1:num_lv) {
-        lambda[i,i] ~ dnorm(0, 0.1) T(0,)
+        lambda[i, i] ~ dnorm(0, 0.1) T(0,)
       }
       for(i in 2:num_lv) {
-        for(j in 1:(i-1)) {
-          lambda[i,j] ~ dnorm(0, 0.1)
+        for(j in 1:(i - 1)) {
+          lambda[i, j] ~ dnorm(0, 0.1)
         }
       }
-      for(i in (num_lv+1):p) {
+      for(i in (num_lv + 1):p) {
         for(j in 1:num_lv) {
-          lambda[i,j] ~ dnorm(0, 0.1)
+          lambda[i, j] ~ dnorm(0, 0.1)
         }
       }
       for(j in 1:p) {
         for(m in 1:n_covars) {
-          beta[j,m] ~ dnorm(0, 0.1)
+          beta[j, m] ~ dnorm(0, 0.1)
         }
       }
     }"
@@ -964,9 +964,9 @@ fit_JSDM.6 <- function(Y,
     model {
       for(i in 1:n) {
         for(j in 1:p) {
-          eta[i,j] <- inprod(lambda[j,], W[i,]) + inprod(beta[j,], X[i,])
-          probit(p_y[i,j]) <- beta0[j] + eta[i,j]
-          y[i,j] ~ dbern(p_y[i,j])
+          eta[i, j] <- inprod(lambda[j, ], W[i, ]) + inprod(beta[j, ], X[i, ])
+          probit(p_y[i, j]) <- beta0[j] + eta[i, j]
+          y[i, j] ~ dbern(p_y[i, j])
         }
       }
       for(k in 1:num_lv) {
@@ -981,25 +981,25 @@ fit_JSDM.6 <- function(Y,
       for(j in 1:p) {
         beta0[j] ~ dnorm(0, 0.1)
         for(m in 1:n_covars) {
-          beta[j,m] ~ dnorm(0, 0.1)
+          beta[j, m] ~ dnorm(0, 0.1)
         }
       }
-      for(i in 1:(num_lv-1)) {
-        for(j in (i+1):num_lv) {
-          lambda[i,j] <- 0
+      for(i in 1:(num_lv - 1)) {
+        for(j in (i + 1):num_lv) {
+          lambda[i, j] <- 0
         }
       }
       for(i in 1:num_lv) {
-        lambda[i,i] <- 1
+        lambda[i, i] <- 1
       }
       for(i in 2:num_lv) {
-        for(j in 1:(i-1)) {
-          lambda[i,j] ~ dnorm(0, 0.1)
+        for(j in 1:(i - 1)) {
+          lambda[i, j] ~ dnorm(0, 0.1)
         }
       }
-      for(i in (num_lv+1):p) {
+      for(i in (num_lv + 1):p) {
         for(j in 1:num_lv) {
-          lambda[i,j] ~ dnorm(0, 0.1)
+          lambda[i, j] ~ dnorm(0, 0.1)
         }
       }
     }"
@@ -1077,7 +1077,7 @@ fit_JSDM.6 <- function(Y,
                          check.convergence.firstrun = FALSE,
                          convtype                   = "Gelman",
                          seed                       = seed),
-    control.MCMC = list(parallelize = TRUE))
+    control.MCMC  = list(parallelize = TRUE))
   
   result$computation_time <- as.numeric(difftime(Sys.time(), 
                                                  start_time, 
@@ -1189,7 +1189,7 @@ run_JSDM <- function(seed,
   
   data <- generate_simulation_data(seed     = seed, 
                                    scenario = scenario, 
-                                   params = params)
+                                   params   = params)
 
   results <- list(seed        = seed,
                   timestamp   = Sys.time(),
