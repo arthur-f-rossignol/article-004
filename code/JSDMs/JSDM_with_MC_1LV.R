@@ -1054,7 +1054,7 @@ fit_JSDM.6 <- function(Y,
                          check.convergence.firstrun = FALSE,
                          convtype                   = "Gelman",
                          seed                       = seed),
-    control.MCMC = list(parallelize = TRUE))
+    control.MCMC  = list(parallelize = TRUE))
   
   result$computation_time <- as.numeric(difftime(Sys.time(), 
                                                  start_time, 
@@ -1130,7 +1130,7 @@ fit_JSDM.6 <- function(Y,
     result$beta_standard_errors[sp]  <- sd(beta_arr[, sp, 1], na.rm = TRUE)
   }
 
-  ess_alpha <- sapply(1:p_species, function(sp) effectiveSize(as.mcmc(beta0_mat[, sp])))
+  ess_alpha        <- sapply(1:p_species, function(sp) effectiveSize(as.mcmc(beta0_mat[, sp])))
   ess_beta         <- sapply(1:p_species, function(sp) effectiveSize(as.mcmc(beta_arr[, sp, 1])))
   result$ess_alpha <- mean(ess_alpha, na.rm = TRUE)
   result$ess_beta  <- mean(ess_beta, na.rm = TRUE)
