@@ -543,7 +543,7 @@ fit_JSDM.4 <- function(Y,
                          runn_idx_u    = nrow(indices_u) > 0)
   }
   
-  ModelConsts <- list(nobs        = nobs,
+  modelConsts <- list(nobs        = nobs,
                       nsites      = n_obs,
                       nspecies    = p_species,
                       nvar        = n_covars,
@@ -561,15 +561,15 @@ fit_JSDM.4 <- function(Y,
                       f0          = n_covars + 1)
 
   if (num_lv > 0) {
-    ModelConsts$indices_idx_s <- loading_info$indices_idx_s
-    ModelConsts$n_idx_s       <- loading_info$n_idx_s
-    ModelConsts$sum_idx_s     <- loading_info$sum_idx_s
-    ModelConsts$indices_idx_u <- loading_info$indices_idx_u
-    ModelConsts$n_idx_u       <- loading_info$n_idx_u
-    ModelConsts$runn_idx_u    <- loading_info$runn_idx_u
+    modelConsts$indices_idx_s <- loading_info$indices_idx_s
+    modelConsts$n_idx_s       <- loading_info$n_idx_s
+    modelConsts$sum_idx_s     <- loading_info$sum_idx_s
+    modelConsts$indices_idx_u <- loading_info$indices_idx_u
+    modelConsts$n_idx_u       <- loading_info$n_idx_u
+    modelConsts$runn_idx_u    <- loading_info$runn_idx_u
   }
 
-  ModelData <- list(Y = Y_long, 
+  modelData <- list(Y = Y_long, 
                     env = env_long)
 
   make_inits <- function() {
@@ -638,8 +638,8 @@ fit_JSDM.4 <- function(Y,
   out <- runMCMCbtadjust::runMCMC_btadjust(
     MCMC_language = "Nimble",
     code          = modelCode,
-    constants     = ModelConsts,
-    data          = ModelData,
+    constants     = modelConsts,
+    data          = modelData,
     inits         = inits_list,
     params        = params,
     niter.min     = mcmc_params$niter_min,
@@ -658,7 +658,7 @@ fit_JSDM.4 <- function(Y,
                          check.convergence.firstrun = TRUE,
                          convtype                   = "Gelman",
                          seed                       = seed),
-    control.MCMC = list(parallelize = TRUE))
+    control.MCMC  = list(parallelize = TRUE))
   
   result$computation_time <- as.numeric(difftime(Sys.time(), 
                                                  start_time, 
@@ -718,9 +718,7 @@ fit_JSDM.4 <- function(Y,
     result$loadings <- apply(lambda_arr, c(2, 3), mean)
   }
 
-  if (!is.null(attrs$final.params)) {
-    result$convergence <- attrs$final.params$converged
-  }
+  result$convergence <- attrs$final.params$converged
 
   result
 }
