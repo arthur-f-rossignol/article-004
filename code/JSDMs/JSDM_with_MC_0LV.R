@@ -455,7 +455,7 @@ fit_JSDM.4 <- function(Y,
                        n_idx_u       = 0,
                        runn_idx_u    = FALSE)
 
-  ModelConsts <- list(nobs        = nobs,
+  modelConsts <- list(nobs        = nobs,
                       nsites      = n_obs,
                       nspecies    = p_species,
                       nvar        = n_covars,
@@ -472,7 +472,7 @@ fit_JSDM.4 <- function(Y,
                       V0          = diag(n_covars),
                       f0          = n_covars + 1)
 
-  ModelData <- list(Y   = Y_long, 
+  modelData <- list(Y   = Y_long, 
                     env = env_long)
 
   make_inits <- function() {
@@ -496,8 +496,8 @@ fit_JSDM.4 <- function(Y,
   out <- runMCMCbtadjust::runMCMC_btadjust(
     MCMC_language = "Nimble",
     code          = modelCode,
-    constants     = ModelConsts,
-    data          = ModelData,
+    constants     = modelConsts,
+    data          = modelData,
     inits         = inits_list,
     params        = params,
     niter.min     = mcmc_params$niter_min,
@@ -586,8 +586,8 @@ fit_JSDM.5 <- function(Y,
     model {
       for(i in 1:n) {
         for(j in 1:p) {
-          probit(p_y[i,j]) <- beta0[j] + inprod(beta[j,], X[i,])
-          y[i,j] ~ dbern(p_y[i,j])
+          probit(p_y[i, j]) <- beta0[j] + inprod(beta[j, ], X[i, ])
+          y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
@@ -738,14 +738,13 @@ fit_JSDM.6 <- function(Y,
   n_covars  <- ncol(X_mat)
 
   result <- initialize_results(p_species, num_lv)
-  
 
   model_string <- "
     model {
       for(i in 1:n) {
         for(j in 1:p) {
-          probit(p_y[i,j]) <- beta0[j] + inprod(beta[j,], X[i,])
-          y[i,j] ~ dbern(p_y[i,j])
+          probit(p_y[i, j]) <- beta0[j] + inprod(beta[j, ], X[i, ])
+          y[i, j] ~ dbern(p_y[i, j])
         }
       }
       for(j in 1:p) {
@@ -805,7 +804,7 @@ fit_JSDM.6 <- function(Y,
                          check.convergence.firstrun = FALSE,
                          convtype                   = "Gelman",
                          seed                       = seed),
-    control.MCMC = list(parallelize = TRUE))
+    control.MCMC  = list(parallelize = TRUE))
   
   result$computation_time <- as.numeric(difftime(Sys.time(), 
                                                  start_time, 
