@@ -229,7 +229,7 @@ run_JAGS_mcmc <- function(model_string,
 
 ## JSDM FITTING FUNCTION #######################################################
 
-fit_jsdm_JAGS <- function(Y, X, cfg, seed) {
+fit_JSDM <- function(Y, X, cfg, seed) {
 
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
@@ -359,7 +359,7 @@ fit_jsdm_JAGS <- function(Y, X, cfg, seed) {
 
 ## SDM FITTING FUNCTION ########################################################
 
-fit_sdm_JAGS <- function(Y, X, cfg, seed) {
+fit_SDM <- function(Y, X, cfg, seed) {
 
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
@@ -457,8 +457,8 @@ pca_var_explained <- pca_var / sum(pca_var)
 
 seed <- 42 + dataset_idx
 
-jsdm_result <- fit_jsdm_JAGS(Y, X_pca, cfg, seed)
-sdm_result  <- fit_sdm_JAGS(Y, X_pca, cfg, seed)
+jsdm_result <- fit_JSDM(Y, X_pca, cfg, seed)
+sdm_result  <- fit_SDM(Y, X_pca, cfg, seed)
 
 output_dir <- "results"
 dir.create(output_dir, showWarnings = FALSE)
