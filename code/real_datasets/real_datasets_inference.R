@@ -455,7 +455,7 @@ if (is.null(species_names)) {
 pca_var <- pca$pca$sdev^2
 pca_var_explained <- pca_var / sum(pca_var)
 
-seed <- 42 + dataset_idx
+seed <- dataset_idx
 
 jsdm_result <- fit_JSDM(Y, X_pca, cfg, seed)
 sdm_result  <- fit_SDM(Y, X_pca, cfg, seed)
