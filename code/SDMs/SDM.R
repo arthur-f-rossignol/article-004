@@ -46,7 +46,7 @@ library(INLA)
 args <- commandArgs(trailingOnly = TRUE)
 
 seed_value <- as.integer(args[1])
-output_dir <- args[2]
+results_dir <- args[2]
 
 ## PARAMETERIZATION ############################################################
 
@@ -1154,7 +1154,7 @@ end_time <- Sys.time()
 
 results$total_time <- as.numeric(difftime(end_time, start_time, units = "secs"))
 
-output_file <- file.path(output_dir, sprintf("replicate_%06d.RData", seed_value))
+output_file <- file.path(results_dir, sprintf("replicate_%06d.RData", seed_value))
 
 save(results, file = output_file)
 
