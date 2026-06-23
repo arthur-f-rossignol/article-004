@@ -24,7 +24,7 @@ library(runMCMCbtadjust)
 
 ## MAIN PARAMETERS #############################################################
 
-DEFAULT_PARAMS <- list(n      = 500,      # number of sites
+DEFAULT_PARAMS <- list(n      = 1000,     # number of sites
                        p      = 10,       # number of species
                        q      = 2,        # number of covariates (excluding intercept)
                        num_lv = 0,        # number of latent variables 
