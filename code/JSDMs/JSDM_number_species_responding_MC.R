@@ -1041,7 +1041,6 @@ fit_JSDM.6 <- function(Y,
     result$latent_variables <- apply(W_arr, c(2, 3), mean)
   }
   
-  ## Three-stage fallback for sigma_W
   s_mat  <- NULL
   s_cols <- grep("^sigma_W\\[", colnames(combined))
   if (length(s_cols) > 0) {
