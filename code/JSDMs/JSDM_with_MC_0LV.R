@@ -89,7 +89,9 @@ simulate_data <- function(seed,
 
   expand_coef <- function(coef, p) {
     if (length(coef) == 1) {
-      rep(coef, p) else coef
+      rep(coef, p) 
+    } else {
+      coef
     }
   }
 
