@@ -1148,9 +1148,9 @@ run_single_replicate <- function(seed) {
 
 start_time <- Sys.time()
 
-results    <- run_single_replicate(seed_value)
+results <- run_single_replicate(seed_value)
 
-end_time   <- Sys.time()
+end_time <- Sys.time()
 
 results$total_time <- as.numeric(difftime(end_time, start_time, units = "secs"))
 
