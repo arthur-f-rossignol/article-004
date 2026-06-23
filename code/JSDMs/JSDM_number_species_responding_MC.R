@@ -2,7 +2,7 @@
 ##                                                                            ##
 ##   JSDMs WITH VARYING NUMBER OF SPECIES RESPONDING TO A MISSING COVARIATE   ##
 ##                                                                            ##
-##      Addressing Unobserved Covariates in Species Distribution Models:      ##
+##       Addressing Missing Covariates in Species Distribution Models:        ##
 ##  Inferential Impacts and Mitigation via Joint Species Distribution Models  ##
 ##                                                                            ##
 ##                  Arthur F. Rossignol & Frédéric Gosselin                   ##
