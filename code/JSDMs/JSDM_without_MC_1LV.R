@@ -1189,9 +1189,9 @@ run_JSDM <- function(seed,
   scenarios <- build_scenarios(params$p)
   scenario <- scenarios[[scenario_id]]
   
-  data <- generate_simulation_data(seed     = seed, 
-                                   scenario = scenario, 
-                                   params   = params)
+  data <- simulate_data(seed     = seed,
+                        scenario = scenario, 
+                        params   = params)
 
   results <- list(seed        = seed,
                   timestamp   = Sys.time(),
