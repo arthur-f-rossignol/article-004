@@ -30,7 +30,7 @@ results_dir <- args[2]
 
 ## PARAMETERS ##################################################################
 
-DEFAULT_PARAMS <- list(n          = 1000,
+DEFAULT_PARAMS <- list(n_obs      = 1000,
                        n_sp       = 10,
                        n_lv       = 1,
                        true_alpha = rep(1, 10),
@@ -53,8 +53,8 @@ simulate_data <- function(replicate_id,
   seed <- replicate_id
   set.seed(seed)
   
-  n    <- params$n
-  n_sp <- params$n_sp
+  n_obs <- params$n_obs
+  n_sp  <- params$n_sp
   
   X1 <- rnorm(n, mean = 0, sd = 1)
   X2 <- rnorm(n, mean = 0, sd = 1)
@@ -72,10 +72,12 @@ simulate_data <- function(replicate_id,
   colnames(B) <- paste0("sp", 1:n_sp)
   
   M <- X %*% B
-  Y <- matrix(NA_integer_, nrow = n, ncol = n_sp,
+  Y <- matrix(NA_integer_, 
+              nrow = n_obs, 
+              ncol = n_sp,
               dimnames = list(NULL, paste0("sp", 1:n_sp)))
   for (j in 1:n_sp) {
-    Y[, j] <- rbinom(n, size = 1, prob = pnorm(M[, j]))
+    Y[, j] <- rbinom(n_obs, size = 1, prob = pnorm(M[, j]))
   }
   
   list(Y            = Y,
