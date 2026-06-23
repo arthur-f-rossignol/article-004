@@ -54,14 +54,14 @@ DEFAULT_PARAMS <- list(mcmc = list(niter_min      = 10000,
                                    thin_min       = 10,
                                    conv_max       = 1.05,
                                    neff_min       = 5000,
-                                   time_max_hours = 24))
+                                   time_max = 24))
 
 ## ARGUMENTS FROM SLURM ########################################################
 
 args <- commandArgs(trailingOnly = TRUE)
 
-dataset_idx  <- as.integer(args[1])
-dataset_name <- DATASETS[dataset_idx]
+dataset_id   <- as.integer(args[1])
+dataset_name <- DATASETS[dataset_id]
 cfg          <- CONFIGS[[dataset_name]]
 
 ## HELPER FUNCTIONS ############################################################
@@ -81,9 +81,9 @@ perform_pca <- function(X, n_pcs) {
   pc           <- pca$x[, 1:n_use, drop = FALSE]
   colnames(pc) <- paste0("PC", 1:n_use)
   list(scores = pc, 
-       pc1 = pc[, 1], 
-       n_pcs = n_use, 
-       pca = pca)
+       pc1    = pc[, 1], 
+       n_pcs  = n_use, 
+       pca    = pca)
 }
 
 ## DATASET LOADING #############################################################
@@ -107,8 +107,8 @@ load_data <- function(name) {
 
   } else if (name == "birds") {
     
-    spe <- read.csv('/path/to/datasets/birds/Birds_PA.csv')
-    env <- read.csv('/path/to/datasets/birds/Birds_Cov.csv')
+    spe <- read.csv('/path/to/datasets/datasets/birds/Birds_PA.csv')
+    env <- read.csv('/path/to/datasets/datasets/birds/Birds_Cov.csv')
     
     Y <- ifelse(as.matrix(spe) > 0, 1, 0)
     X <- data.matrix(env)
@@ -123,24 +123,24 @@ load_data <- function(name) {
 
   } else if (name == "kilpisjarvi") {
     
-    ta <- read.csv("/path/to/datasets/kilpisjarvi/Kilpisjarvi_plant_data.csv")
+    data <- read.csv("/path/to/datasets/kilpisjarvi/Kilpisjarvi_plant_data.csv")
     
-    sites <- unique(ta$site)
+    sites <- unique(data$site)
     ny <- length(sites)
-    sp <- unique(ta$species)
+    sp <- unique(data$species)
     ns <- length(sp)
     Y.pa <- matrix(0, nrow = ny, ncol = ns)
     T3_GDD3 <- rep(NA, ny)
     T3_FDD <- rep(NA, ny)
     moist_mean_summer <- rep(NA, ny)
 
-    for (k in 1:nrow(ta)) {
-      i <- which(ta$site[k] == sites)
-      j <- which(ta$species[k] == sp)
+    for (k in 1:nrow(data)) {
+      i <- which(data$site[k] == sites)
+      j <- which(data$species[k] == sp)
       Y.pa[i, j] <- 1
-      T3_GDD3[i] <- ta$T3_GDD3[k]
-      moist_mean_summer[i] <- ta$moist_mean_summer[k]
-      T3_FDD[i] <- ta$T3_FDD[k]
+      T3_GDD3[i] <- data$T3_GDD3[k]
+      moist_mean_summer[i] <- data$moist_mean_summer[k]
+      T3_FDD[i] <- data$T3_FDD[k]
     }
 
     sp.order    <- order(colSums(Y.pa), decreasing = TRUE)
@@ -159,11 +159,11 @@ load_data <- function(name) {
       filter(Yr_Mo != "2018-05",
              !is.na(Protein_lag1),
              !is.na(Height_lag1)) %>%
-      dplyr::select(
-        month_id, Name, x, y,
-        Cattle, Wildebeest, Zebra, Thompsons_Gazelle, Impala, Topi,
-        Eland, Buffalo, Grants_Gazelle, Waterbuck, Dikdik, Elephant,
-        Site, Pgrazed_lag1, Precip, Protein_lag1, Height_lag1, sin_month, cos_month) %>%
+      dplyr::select(month_id, Name, x, y,
+                    Cattle, Wildebeest, Zebra, Thompsons_Gazelle, Impala, Topi,
+                    Eland, Buffalo, Grants_Gazelle, Waterbuck, Dikdik, Elephant,
+                    Site, Pgrazed_lag1, Precip, Protein_lag1, Height_lag1, 
+                    sin_month, cos_month) %>%
       drop_na(.)
 
     Y <- data %>%
@@ -182,7 +182,7 @@ load_data <- function(name) {
 
 ## JAGS MCMC ENGINE WITH runMCMCbtadjust() #####################################
 
-run_JAGS_mcmc <- function(model_string, 
+run_mcmc <- function(model_string, 
                           data_list, 
                           inits_list, 
                           params,
@@ -198,31 +198,29 @@ run_JAGS_mcmc <- function(model_string,
   model_file <- file.path(tempdir(), sprintf("%s.txt", tag))
   writeLines(model_string, model_file)
 
-  out <- runMCMCbtadjust::runMCMC_btadjust(
-    MCMC_language = "JAGS",
-    code          = model_file,
-    data          = data_list,
-    inits         = inits_list,
-    params        = params,
-    params.conv   = params_conv,
-    niter.min     = mcmc_params$niter_min,
-    niter.max     = Inf,
-    nburnin.min   = mcmc_params$nburnin_min,
-    nburnin.max   = Inf,
-    thin.min      = mcmc_params$thin_min,
-    thin.max      = Inf,
-    Nchains       = length(inits_list),
-    conv.max      = mcmc_params$conv_max,
-    neff.min      = mcmc_params$neff_min,
-    control       = list(time.max                   = 3600 * mcmc_params$time_max_hours,
-                         round.thinmult             = TRUE,
-                         print.diagnostics          = FALSE,
-                         Ncycles.target             = 2,
-                         check.convergence.firstrun = FALSE,
-                         convtype                   = "Gelman",
-                         seed                       = seed),
-    control.MCMC  = list(parallelize = TRUE, 
-                         WAIC = TRUE))
+  out <- runMCMCbtadjust::runMCMC_btadjust(MCMC_language = "JAGS",
+                                           code          = model_file,
+                                           data          = data_list,
+                                           inits         = inits_list,
+                                           params        = params,
+                                           params.conv   = params_conv,
+                                           niter.min     = mcmc_params$niter_min,
+                                           niter.max     = Inf,
+                                           nburnin.min   = mcmc_params$nburnin_min,
+                                           nburnin.max   = Inf,
+                                           thin.min      = mcmc_params$thin_min,
+                                           thin.max      = Inf,
+                                           Nchains       = length(inits_list),
+                                           conv.max      = mcmc_params$conv_max,
+                                           neff.min      = mcmc_params$neff_min,
+                                           control       = list(time.max                   = 3600 * mcmc_params$time_max,
+                                                                round.thinmult             = TRUE,
+                                                                print.diagnostics          = FALSE,
+                                                                Ncycles.target             = 2,
+                                                                check.convergence.firstrun = FALSE,
+                                                                convtype                   = "Gelman",
+                                                                seed                       = seed),
+                                           control.MCMC  = list(parallelize = TRUE))
 
   list(samples = out, attrs = attributes(out), file = model_file)
 }
@@ -230,31 +228,31 @@ run_JAGS_mcmc <- function(model_string,
 ## JSDM FITTING FUNCTION #######################################################
 
 fit_JSDM <- function(Y, X, cfg, seed) {
-
+  
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
   if (is.vector(X_mat)) {
     X_mat <- matrix(X_mat, ncol = 1)
   }
-
-  n_obs     <- nrow(Y)
-  p_species <- ncol(Y)
-  n_covars  <- ncol(X_mat)
-  num_lv    <- 1
-
+  
+  n_obs    <- nrow(Y)
+  n_sp     <- ncol(Y)
+  n_covars <- ncol(X_mat)
+  n_lv     <- 1
+  
   model_string <- "
     model {
       for(i in 1:n) {
         for(j in 1:p) {
-          eta[i,j] <- inprod(lambda[j,], W[i,]) + inprod(beta[j,], X[i,])
-          probit(p_y[i,j]) <- beta0[j] + eta[i,j]
-          y[i,j] ~ dbern(p_y[i,j])
+          eta[i, j] <- inprod(lambda[j, ], W[i, ]) + inprod(beta[j, ], X[i, ])
+          probit(p_y[i, j]) <- beta0[j] + eta[i, j]
+          y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
       for(i in 1:n) {
-        for(k in 1:num_lv) {
-          W[i,k] ~ dnorm(0, 1)
+        for(k in 1:n_lv) {
+          W[i, k] ~ dnorm(0, 1)
         }
       }
 
@@ -262,93 +260,93 @@ fit_JSDM <- function(Y, X, cfg, seed) {
         beta0[j] ~ dnorm(0, 0.1)
       }
 
-      for(i in 1:(num_lv-1)) {
-        for(j in (i+1):num_lv) {
-          lambda[i,j] <- 0
+      for(i in 1:(n_lv-1)) {
+        for(j in (i + 1):n_lv) {
+          lambda[i, j] <- 0
         }
       }
-      for(i in 1:num_lv) {
-        lambda[i,i] ~ dnorm(0, 0.1) T(0,)
+      for(i in 1:n_lv) {
+        lambda[i, i] ~ dnorm(0, 0.1) T(0,)
       }
-      for(i in 2:num_lv) {
-        for(j in 1:(i-1)) {
-          lambda[i,j] ~ dnorm(0, 0.1)
+      for(i in 2:n_lv) {
+        for(j in 1:(i - 1)) {
+          lambda[i, j] ~ dnorm(0, 0.1)
         }
       }
-      for(i in (num_lv+1):p) {
-        for(j in 1:num_lv) {
-          lambda[i,j] ~ dnorm(0, 0.1)
+      for(i in (n_lv + 1):p) {
+        for(j in 1:n_lv) {
+          lambda[i, j] ~ dnorm(0, 0.1)
         }
       }
 
       for(j in 1:p) {
         for(m in 1:n_covars) {
-          beta[j,m] ~ dnorm(0, 0.1)
+          beta[j, m] ~ dnorm(0, 0.1)
         }
       }
     }"
-
-  JAGS_data <- list(y        = Y,
+  
+  data_list <- list(y        = Y,
                     X        = X_mat,
                     n        = as.integer(n_obs),
-                    p        = as.integer(p_species),
-                    num_lv   = as.integer(num_lv),
+                    p        = as.integer(n_sp),
+                    n_lv     = as.integer(n_lv),
                     n_covars = as.integer(n_covars))
-
+  
   make_inits <- function() {
-    list(beta0 = rnorm(p_species, 0, 0.5),
-         beta  = matrix(rnorm(p_species * n_covars, 0, 0.3), p_species, n_covars),
-         W     = matrix(rnorm(n_obs * num_lv, 0, 0.5), n_obs, num_lv))
+    list(beta0 = rnorm(n_sp, 0, 0.5),
+         beta  = matrix(rnorm(n_sp * n_covars, 0, 0.3), n_sp, n_covars),
+         W     = matrix(rnorm(n_obs * n_lv, 0, 0.5), n_obs, n_lv))
   }
   
   inits_list <- replicate(3, make_inits(), simplify = FALSE)
-
-  run <- run_JAGS_mcmc(model_string = model_string,
-                       data_list    = JAGS_data,
-                       inits_list   = inits_list,
-                       params       = c("beta0", "beta", "lambda", "W"),
-                       params_conv  = c("beta0", "beta"),
-                       seed         = seed,
-                       tag          = "jsdm_inference")
-
+  
+  run <- run_mcmc(model_string = model_string,
+                  data_list    = data_list,
+                  inits_list   = inits_list,
+                  params       = c("beta0", "beta", "lambda", "W"),
+                  params_conv  = c("beta0", "beta"),
+                  seed         = seed,
+                  tag          = "JSDM_inference")
+  
   combined <- do.call(rbind, run$samples)
   attrs    <- run$attrs
-
-  beta0_draws <- matrix(NA, nrow(combined), p_species)
+  
+  beta0_draws <- matrix(NA, nrow(combined), n_sp)
   beta0_cols <- grep("^beta0\\[", colnames(combined))
-  for (idx in beta0_cols) {
-    j <- as.numeric(gsub("beta0\\[|\\]", "", colnames(combined)[idx]))
-    beta0_draws[, j] <- combined[, idx]
+  for (id in beta0_cols) {
+    j <- as.numeric(gsub("beta0\\[|\\]", "", colnames(combined)[id]))
+    beta0_draws[, j] <- combined[, id]
   }
-
-  beta_draws <- array(NA, dim = c(nrow(combined), p_species, n_covars))
+  
+  beta_draws <- array(NA, dim = c(nrow(combined), n_sp, n_covars))
   beta_cols <- grep("^beta\\[", colnames(combined))
-  for (idx in beta_cols) {
-    nm <- colnames(combined)[idx]
+  for (id in beta_cols) {
+    nm <- colnames(combined)[id]
     ij <- as.numeric(strsplit(gsub("beta\\[|\\]", "", nm), ",")[[1]])
-    beta_draws[, ij[1], ij[2]] <- combined[, idx]
+    beta_draws[, ij[1], ij[2]] <- combined[, id]
   }
-
-  lambda_draws <- array(NA, dim = c(nrow(combined), p_species, num_lv))
+  
+  lambda_draws <- array(NA, dim = c(nrow(combined), n_sp, n_lv))
   lambda_cols <- grep("^lambda\\[", colnames(combined))
-  for (idx in lambda_cols) {
-    nm <- colnames(combined)[idx]
+  for (id in lambda_cols) {
+    nm <- colnames(combined)[id]
     ij <- as.numeric(strsplit(gsub("lambda\\[|\\]", "", nm), ",")[[1]])
-    lambda_draws[, ij[1], ij[2]] <- combined[, idx]
+    lambda_draws[, ij[1], ij[2]] <- combined[, id]
   }
   lambda_draws[is.na(lambda_draws)] <- 0
-
-  W_draws <- array(NA, dim = c(nrow(combined), n_obs, num_lv))
+  
+  W_draws <- array(NA, dim = c(nrow(combined), n_obs, n_lv))
   W_cols <- grep("^W\\[", colnames(combined))
-  for (idx in W_cols) {
-    nm <- colnames(combined)[idx]
+  for (id in W_cols) {
+    nm <- colnames(combined)[id]
     ik <- as.numeric(strsplit(gsub("W\\[|\\]", "", nm), ",")[[1]])
-    W_draws[, ik[1], ik[2]] <- combined[, idx]
+    W_draws[, ik[1], ik[2]] <- combined[, id]
   }
   W_mean <- apply(W_draws, c(2, 3), mean, na.rm = TRUE)
-
+  
   unlink(run$file)
-
+  
   list(beta0_draws  = beta0_draws,
        beta_draws   = beta_draws,
        lambda_draws = lambda_draws,
@@ -360,24 +358,24 @@ fit_JSDM <- function(Y, X, cfg, seed) {
 ## SDM FITTING FUNCTION ########################################################
 
 fit_SDM <- function(Y, X, cfg, seed) {
-
+  
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
   if (is.vector(X_mat)) {
     X_mat <- matrix(X_mat, ncol = 1)
   }
-
+  
   n_obs     <- nrow(Y)
-  p_species <- ncol(Y)
+  n_sp <- ncol(Y)
   n_covars  <- ncol(X_mat)
-
+  
   model_string <- "
     model {
       for(i in 1:n) {
         for(j in 1:p) {
-          eta[i,j] <- inprod(beta[j,], X[i,])
-          probit(p_y[i,j]) <- beta0[j] + eta[i,j]
-          y[i,j] ~ dbern(p_y[i,j])
+          eta[i, j] <- inprod(beta[j, ], X[i, ])
+          probit(p_y[i, j]) <- beta0[j] + eta[i, j]
+          y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
@@ -387,52 +385,52 @@ fit_SDM <- function(Y, X, cfg, seed) {
 
       for(j in 1:p) {
         for(m in 1:n_covars) {
-          beta[j,m] ~ dnorm(0, 0.1)
+          beta[j, m] ~ dnorm(0, 0.1)
         }
       }
     }"
-
-  JAGS_data <- list(y        = Y,
+  
+  data_list <- list(y        = Y,
                     X        = X_mat,
                     n        = as.integer(n_obs),
-                    p        = as.integer(p_species),
+                    p        = as.integer(n_sp),
                     n_covars = as.integer(n_covars))
-
+  
   make_inits <- function() {
-    list(beta0 = rnorm(p_species, 0, 0.5),
-         beta  = matrix(rnorm(p_species * n_covars, 0, 0.3), p_species, n_covars))
+    list(beta0 = rnorm(n_sp, 0, 0.5),
+         beta  = matrix(rnorm(n_sp * n_covars, 0, 0.3), n_sp, n_covars))
   }
   
   inits_list <- replicate(3, make_inits(), simplify = FALSE)
   
-  run <- run_JAGS_mcmc(model_string = model_string,
-                       data_list    = JAGS_data,
-                       inits_list   = inits_list,
-                       params       = c("beta0", "beta"),
-                       params_conv  = c("beta0", "beta"),
-                       seed         = seed,
-                       tag          = "sdm_inference")
-
+  run <- run_mcmc(model_string = model_string,
+                  data_list    = data_list,
+                  inits_list   = inits_list,
+                  params       = c("beta0", "beta"),
+                  params_conv  = c("beta0", "beta"),
+                  seed         = seed,
+                  tag          = "SDM_inference")
+  
   combined <- do.call(rbind, run$samples)
   attrs    <- run$attrs
-
-  beta0_draws <- matrix(NA, nrow(combined), p_species)
+  
+  beta0_draws <- matrix(NA, nrow(combined), n_sp)
   beta0_cols <- grep("^beta0\\[", colnames(combined))
-  for (idx in beta0_cols) {
-    j <- as.numeric(gsub("beta0\\[|\\]", "", colnames(combined)[idx]))
-    beta0_draws[, j] <- combined[, idx]
+  for (id in beta0_cols) {
+    j <- as.numeric(gsub("beta0\\[|\\]", "", colnames(combined)[id]))
+    beta0_draws[, j] <- combined[, id]
   }
-
-  beta_draws <- array(NA, dim = c(nrow(combined), p_species, n_covars))
+  
+  beta_draws <- array(NA, dim = c(nrow(combined), n_sp, n_covars))
   beta_cols <- grep("^beta\\[", colnames(combined))
-  for (idx in beta_cols) {
-    nm <- colnames(combined)[idx]
+  for (id in beta_cols) {
+    nm <- colnames(combined)[id]
     ij <- as.numeric(strsplit(gsub("beta\\[|\\]", "", nm), ",")[[1]])
-    beta_draws[, ij[1], ij[2]] <- combined[, idx]
+    beta_draws[, ij[1], ij[2]] <- combined[, id]
   }
-
+  
   unlink(run$file)
-
+  
   list(beta0_draws = beta0_draws,
        beta_draws  = beta_draws,
        n_draws     = nrow(combined),
@@ -455,10 +453,10 @@ if (is.null(species_names)) {
 pca_var <- pca$pca$sdev^2
 pca_var_explained <- pca_var / sum(pca_var)
 
-seed <- dataset_idx
+seed <- dataset_id
 
-jsdm_result <- fit_JSDM(Y, X_pca, cfg, seed)
-sdm_result  <- fit_SDM(Y, X_pca, cfg, seed)
+JSDM_resultss <- fit_JSDM(Y, X_pca, cfg, seed)
+SDM_results  <- fit_SDM(Y, X_pca, cfg, seed)
 
 output_dir <- "results"
 dir.create(output_dir, showWarnings = FALSE)
@@ -467,17 +465,17 @@ model_info <- list(dataset_name      = dataset_name,
                    n_sites           = nrow(Y),
                    n_species         = n_species,
                    n_pcs             = pca$n_pcs,
-                   n_latent          = 1,
+                   n_lv              = 1,
                    species_names     = species_names,
                    pca_var_explained = pca_var_explained,
                    mcmc_params       = DEFAULT_PARAMS$mcmc,
-                   jsdm_convergence  = jsdm_result$convergence,
-                   sdm_convergence   = sdm_result$convergence,
+                   jsdm_convergence  = JSDM_resultss$convergence,
+                   sdm_convergence   = SDM_results$convergence,
                    seed              = seed)
 
 outfile <- file.path(output_dir, paste0(dataset_name, "_inference.RData"))
-save(jsdm_result, 
-     sdm_result, 
+save(JSDM_resultss, 
+     SDM_results, 
      model_info, 
      Y,
      X_pca,
