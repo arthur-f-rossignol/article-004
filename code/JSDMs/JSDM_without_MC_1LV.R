@@ -28,7 +28,6 @@ DEFAULT_PARAMS <- list(n      = 1000,     # number of sites
                        p      = 10,       # number of species
                        q      = 2,        # number of covariates (excluding intercept)
                        num_lv = 0,        # number of latent variables 
-                       
                        mcmc   = list(niter_min      = 25000,
                                      nburnin_min    = 25000,
                                      thin_min       = 10,
