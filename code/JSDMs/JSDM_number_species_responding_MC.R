@@ -24,8 +24,9 @@ library(runMCMCbtadjust)
 
 ## ARGUMENTS FROM SLURM ########################################################
 
-args    <- commandArgs(trailingOnly = TRUE)
-task_id <- as.integer(args[1])
+args        <- commandArgs(trailingOnly = TRUE)
+task_id     <- as.integer(args[1])
+results_dir <- args[2]
 
 ## PARAMETERS ##################################################################
 
@@ -1149,8 +1150,6 @@ results <- list(task_id      = task_id,
                                   true_beta  = data$B["beta", ],
                                   true_gamma = data$B["gamma", ]),
                 model_result = model_result)
-
-results_dir <- "results"
 
 file_name <- file.path(results_dir, sprintf("%s_k%02d_rep%03d.RData",
                                             gsub("\\.", "", model_name),
