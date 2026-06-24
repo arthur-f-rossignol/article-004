@@ -25,6 +25,7 @@ library(runMCMCbtadjust)
 ## ARGUMENTS FROM SLURM ########################################################
 
 args        <- commandArgs(trailingOnly = TRUE)
+
 task_id     <- as.integer(args[1])
 results_dir <- args[2]
 
