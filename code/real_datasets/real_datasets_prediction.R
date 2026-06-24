@@ -110,12 +110,12 @@ CONFIGS <- list(butterflies = list(n_pcs   = 4,
                                    min_occ = 0, 
                                    max_occ = 1))
 
-DEFAULT_PARAMS <- list(mcmc = list(niter_min   = 10000,
-                                   nburnin_min = 10000,
-                                   thin_min    = 10,
-                                   conv_max    = 1.05,
-                                   neff_min    = 5000,
-                                   time_max    = 24))
+DEFAULT_PARAMS <- list(mcmc = list(n_iter_min   = 10000,
+                                   n_burnin_min = 10000,
+                                   thin_min     = 10,
+                                   conv_max     = 1.05,
+                                   n_eff_min    = 5000,
+                                   time_max     = 24))
 
 ## ARGUMENTS FROM SLURM ########################################################
 
@@ -322,15 +322,15 @@ run_mcmc <- function(model_string,
                                            inits         = inits_list,
                                            params        = params,
                                            params.conv   = params_conv,
-                                           niter.min     = mcmc_params$niter_min,
+                                           niter.min     = mcmc_params$n_iter_min,
                                            niter.max     = Inf,
-                                           nburnin.min   = mcmc_params$nburnin_min,
+                                           nburnin.min   = mcmc_params$n_burnin_min,
                                            nburnin.max   = Inf,
                                            thin.min      = mcmc_params$thin_min,
                                            thin.max      = Inf,
                                            Nchains       = length(inits_list),
                                            conv.max      = mcmc_params$conv_max,
-                                           neff.min      = mcmc_params$neff_min,
+                                           neff.min      = mcmc_params$n_eff_min,
                                            control       = list(time.max                   = 3600 * mcmc_params$time_max,
                                                                 round.thinmult             = TRUE,
                                                                 print.diagnostics          = FALSE,
