@@ -360,25 +360,25 @@ fit_JSDM <- function(Y, X, cfg, seed) {
   
   model_string <- "
     model {
-      for(i in 1:n) {
-        for(j in 1:p) {
+      for(i in 1:n_obs) {
+        for(j in 1:n_sp) {
           eta[i, j] <- inprod(lambda[j,], W[i,]) + inprod(beta[j,], X[i,])
           probit(p_y[i, j]) <- beta0[j] + eta[i, j]
           y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
-      for(i in 1:n) {
+      for(i in 1:n_obs) {
         for(k in 1:n_lv) {
           W[i, k] ~ dnorm(0, 1)
         }
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         beta0[j] ~ dnorm(0, 0.1)
       }
 
-      for(i in 1:(n_lv-1)) {
+      for(i in 1:(n_lv - 1)) {
         for(j in (i + 1):n_lv) {
           lambda[i, j] <- 0
         }
@@ -397,7 +397,7 @@ fit_JSDM <- function(Y, X, cfg, seed) {
         }
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         for(m in 1:n_covars) {
           beta[j, m] ~ dnorm(0, 0.1)
         }
@@ -406,10 +406,10 @@ fit_JSDM <- function(Y, X, cfg, seed) {
   
   data_list <- list(y        = Y,
                     X        = X_mat,
-                    n        = as.integer(n_obs),
-                    p        = as.integer(n_sp),
-                    n_lv     = as.integer(n_lv),
-                    n_covars = as.integer(n_covars))
+                    n_obs    = n_obs,
+                    n_sp     = n_sp,
+                    n_lv     = n_lv,
+                    n_covars = n_covars)
   
   make_inits <- function() {
     list(beta0 = rnorm(n_sp, 0, 0.5),
@@ -489,19 +489,19 @@ fit_SDM <- function(Y, X, cfg, seed) {
   
   model_string <- "
     model {
-      for(i in 1:n) {
-        for(j in 1:p) {
+      for(i in 1:n_obs) {
+        for(j in 1:n_sp) {
           eta[i, j] <- inprod(beta[j,], X[i,])
           probit(p_y[i, j]) <- beta0[j] + eta[i, j]
           y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         beta0[j] ~ dnorm(0, 0.1)
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         for(m in 1:n_covars) {
           beta[j, m] ~ dnorm(0, 0.1)
         }
@@ -510,9 +510,9 @@ fit_SDM <- function(Y, X, cfg, seed) {
   
   data_list <- list(y        = Y,
                     X        = X_mat,
-                    n        = as.integer(n_obs),
-                    p        = as.integer(n_sp),
-                    n_covars = as.integer(n_covars))
+                    n_obs    = n_obs,
+                    n_sp     = n_sp,
+                    n_covars = n_covars)
   
   make_inits <- function() {
     list(beta0 = rnorm(n_sp, 0, 0.5),
