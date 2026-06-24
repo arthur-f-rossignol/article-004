@@ -91,24 +91,24 @@ SPLITS <- c("interpolation",
 
 TRAIN_PROP <- 0.5
 
-CONFIGS <- list(butterflies = list(n_pcs   = 4, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                birds       = list(n_pcs   = 5, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                eucalypts   = list(n_pcs   = 5, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                kilpisjarvi = list(n_pcs   = 3, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                mara        = list(n_pcs   = 5, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                aravo       = list(n_pcs   = 2, 
-                                   min_occ = 0, 
-                                   max_occ = 1))
+CONFIG <- list(butterflies = list(n_pcs   = 4, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               birds       = list(n_pcs   = 5, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               eucalypts   = list(n_pcs   = 5, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               kilpisjarvi = list(n_pcs   = 3, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               mara        = list(n_pcs   = 5, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               aravo       = list(n_pcs   = 2, 
+                                  min_occ = 0, 
+                                  max_occ = 1))
 
 DEFAULT_PARAMS <- list(mcmc = list(n_iter_min   = 10000,
                                    n_burnin_min = 10000,
@@ -127,7 +127,7 @@ replicate  <- as.integer(args[3])
 
 dataset_name <- DATASETS[dataset_id]
 split_name   <- SPLITS[split_type]
-cfg          <- CONFIGS[[dataset_name]]
+config       <- CONFIG[[dataset_name]]
 
 ## HELPER FUNCTIONS ############################################################
 
@@ -345,7 +345,7 @@ run_mcmc <- function(model_string,
 
 ## JSDM FITTING FUNCTION #######################################################
 
-fit_JSDM <- function(Y, X, cfg, seed) {
+fit_JSDM <- function(Y, X, config, seed) {
   
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
@@ -475,7 +475,7 @@ fit_JSDM <- function(Y, X, cfg, seed) {
 
 ## SDM FITTING FUNCTION ########################################################
 
-fit_SDM <- function(Y, X, cfg, seed) {
+fit_SDM <- function(Y, X, config, seed) {
   
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
@@ -636,8 +636,8 @@ compute_loglik <- function(Y_test,
 ## RUN #########################################################################
 
 data <- load_data(dataset_name)
-Y    <- filter_species(data$Y, cfg$min_occ, cfg$max_occ)
-pca  <- perform_pca(data$X, cfg$n_pcs)
+Y    <- filter_species(data$Y, config$min_occ, config$max_occ)
+pca  <- perform_pca(data$X, config$n_pcs)
 
 n_sp     <- ncol(Y)
 species_names <- colnames(Y)
@@ -656,8 +656,8 @@ if (split_type == 1) {
   split <- full_extrapolation_split(Y, pca$scores, pca$pc1)
 }
 
-JSDM_result <- fit_JSDM(split$Y_tr, split$X_tr, cfg, seed)
-SDM_result  <- fit_SDM(split$Y_tr, split$X_tr, cfg, seed)
+JSDM_result <- fit_JSDM(split$Y_tr, split$X_tr, config, seed)
+SDM_result  <- fit_SDM(split$Y_tr, split$X_tr, config, seed)
 
 JSDM_loglik <- compute_loglik(split$Y_val,
                                     split$X_val,
