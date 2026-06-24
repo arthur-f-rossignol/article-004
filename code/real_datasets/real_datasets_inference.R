@@ -67,10 +67,10 @@ cfg          <- CONFIGS[[dataset_name]]
 ## HELPER FUNCTIONS ############################################################
 
 filter_species <- function(Y, min_occ, max_occ) {
-  n     <- nrow(Y)
+  n_obs <- nrow(Y)
   occ   <- colSums(Y)
-  min_c <- if (min_occ < 1) ceiling(n * min_occ) else min_occ
-  max_c <- if (max_occ <= 1) floor(n * max_occ) else max_occ
+  min_c <- if (min_occ < 1) ceiling(n_obs * min_occ) else min_occ
+  max_c <- if (max_occ <= 1) floor(n_obs * max_occ) else max_occ
   keep  <- which(occ >= min_c & occ <= max_c)
   Y[, keep, drop = FALSE]
 }
@@ -183,17 +183,13 @@ load_data <- function(name) {
 ## JAGS MCMC ENGINE WITH runMCMCbtadjust() #####################################
 
 run_mcmc <- function(model_string, 
-                          data_list, 
-                          inits_list, 
-                          params,
-                          seed, 
-                          tag, 
-                          mcmc_params = NULL, 
-                          params_conv = NULL) {
-
-  if (is.null(mcmc_params)) {
-    mcmc_params <- DEFAULT_PARAMS$mcmc
-  }
+                     data_list, 
+                     inits_list, 
+                     params,
+                     params_conv,
+                     mcmc_params
+                     seed,
+                     tag) {
 
   model_file <- file.path(tempdir(), sprintf("%s.txt", tag))
   writeLines(model_string, model_file)
@@ -231,6 +227,7 @@ fit_JSDM <- function(Y, X, cfg, seed) {
   
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
+  
   if (is.vector(X_mat)) {
     X_mat <- matrix(X_mat, ncol = 1)
   }
@@ -242,25 +239,25 @@ fit_JSDM <- function(Y, X, cfg, seed) {
   
   model_string <- "
     model {
-      for(i in 1:n) {
-        for(j in 1:p) {
+      for(i in 1:n_obs) {
+        for(j in 1:n_sp) {
           eta[i, j] <- inprod(lambda[j, ], W[i, ]) + inprod(beta[j, ], X[i, ])
           probit(p_y[i, j]) <- beta0[j] + eta[i, j]
           y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
-      for(i in 1:n) {
+      for(i in 1:n_obs) {
         for(k in 1:n_lv) {
           W[i, k] ~ dnorm(0, 1)
         }
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         beta0[j] ~ dnorm(0, 0.1)
       }
 
-      for(i in 1:(n_lv-1)) {
+      for(i in 1:(n_lv - 1)) {
         for(j in (i + 1):n_lv) {
           lambda[i, j] <- 0
         }
@@ -279,7 +276,7 @@ fit_JSDM <- function(Y, X, cfg, seed) {
         }
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         for(m in 1:n_covars) {
           beta[j, m] ~ dnorm(0, 0.1)
         }
@@ -288,10 +285,10 @@ fit_JSDM <- function(Y, X, cfg, seed) {
   
   data_list <- list(y        = Y,
                     X        = X_mat,
-                    n        = as.integer(n_obs),
-                    p        = as.integer(n_sp),
+                    n_obs    = n_obs,
+                    n_sp     = n_sp,
                     n_lv     = as.integer(n_lv),
-                    n_covars = as.integer(n_covars))
+                    n_covars = n_covars)
   
   make_inits <- function() {
     list(beta0 = rnorm(n_sp, 0, 0.5),
@@ -306,6 +303,7 @@ fit_JSDM <- function(Y, X, cfg, seed) {
                   inits_list   = inits_list,
                   params       = c("beta0", "beta", "lambda", "W"),
                   params_conv  = c("beta0", "beta"),
+                  mcmc_params  = DEFAULT_PARAMS$mcmc,
                   seed         = seed,
                   tag          = "JSDM_inference")
   
@@ -365,25 +363,25 @@ fit_SDM <- function(Y, X, cfg, seed) {
     X_mat <- matrix(X_mat, ncol = 1)
   }
   
-  n_obs     <- nrow(Y)
-  n_sp <- ncol(Y)
-  n_covars  <- ncol(X_mat)
+  n_obs    <- nrow(Y)
+  n_sp     <- ncol(Y)
+  n_covars <- ncol(X_mat)
   
   model_string <- "
     model {
-      for(i in 1:n) {
-        for(j in 1:p) {
+      for(i in 1:n_obs) {
+        for(j in 1:n_sp) {
           eta[i, j] <- inprod(beta[j, ], X[i, ])
           probit(p_y[i, j]) <- beta0[j] + eta[i, j]
           y[i, j] ~ dbern(p_y[i, j])
         }
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         beta0[j] ~ dnorm(0, 0.1)
       }
 
-      for(j in 1:p) {
+      for(j in 1:n_sp) {
         for(m in 1:n_covars) {
           beta[j, m] ~ dnorm(0, 0.1)
         }
@@ -392,9 +390,9 @@ fit_SDM <- function(Y, X, cfg, seed) {
   
   data_list <- list(y        = Y,
                     X        = X_mat,
-                    n        = as.integer(n_obs),
-                    p        = as.integer(n_sp),
-                    n_covars = as.integer(n_covars))
+                    n_obs    = n_obs,
+                    n_sp     = n_sp,
+                    n_covars = n_covars)
   
   make_inits <- function() {
     list(beta0 = rnorm(n_sp, 0, 0.5),
@@ -408,6 +406,7 @@ fit_SDM <- function(Y, X, cfg, seed) {
                   inits_list   = inits_list,
                   params       = c("beta0", "beta"),
                   params_conv  = c("beta0", "beta"),
+                  mcmc_params  = DEFAULT_PARAMS$mcmc,
                   seed         = seed,
                   tag          = "SDM_inference")
   
