@@ -30,24 +30,24 @@ DATASETS <- c("butterflies",
               "mara", 
               "aravo")
 
-CONFIGS <- list(butterflies = list(n_pcs   = 4, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                birds       = list(n_pcs   = 5, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                eucalypts   = list(n_pcs   = 5, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                kilpisjarvi = list(n_pcs   = 3, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                mara        = list(n_pcs   = 5, 
-                                   min_occ = 0.05, 
-                                   max_occ = 0.95),
-                aravo       = list(n_pcs   = 2, 
-                                   min_occ = 0, 
-                                   max_occ = 1))
+CONFIG <- list(butterflies = list(n_pcs   = 4, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               birds       = list(n_pcs   = 5, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               eucalypts   = list(n_pcs   = 5, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               kilpisjarvi = list(n_pcs   = 3, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               mara        = list(n_pcs   = 5, 
+                                  min_occ = 0.05, 
+                                  max_occ = 0.95),
+               aravo       = list(n_pcs   = 2, 
+                                  min_occ = 0, 
+                                  max_occ = 1))
 
 DEFAULT_PARAMS <- list(mcmc = list(n_iter_min   = 10000,
                                    n_burnin_min = 10000,
@@ -62,7 +62,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 dataset_id   <- as.integer(args[1])
 dataset_name <- DATASETS[dataset_id]
-cfg          <- CONFIGS[[dataset_name]]
+config       <- config[[dataset_name]]
 
 ## HELPER FUNCTIONS ############################################################
 
@@ -223,7 +223,7 @@ run_mcmc <- function(model_string,
 
 ## JSDM FITTING FUNCTION #######################################################
 
-fit_JSDM <- function(Y, X, cfg, seed) {
+fit_JSDM <- function(Y, X, config, seed) {
   
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
@@ -355,7 +355,7 @@ fit_JSDM <- function(Y, X, cfg, seed) {
 
 ## SDM FITTING FUNCTION ########################################################
 
-fit_SDM <- function(Y, X, cfg, seed) {
+fit_SDM <- function(Y, X, config, seed) {
   
   Y     <- as.matrix(Y)
   X_mat <- as.matrix(X)
@@ -439,8 +439,8 @@ fit_SDM <- function(Y, X, cfg, seed) {
 ## RUN #########################################################################
 
 data_raw <- load_data(dataset_name)
-Y        <- filter_species(data_raw$Y, cfg$min_occ, cfg$max_occ)
-pca      <- perform_pca(data_raw$X, cfg$n_pcs)
+Y        <- filter_species(data_raw$Y, config$min_occ, config$max_occ)
+pca      <- perform_pca(data_raw$X, config$n_pcs)
 X_pca    <- pca$scores
 
 n_species    <- ncol(Y)
@@ -454,8 +454,8 @@ pca_var_explained <- pca_var / sum(pca_var)
 
 seed <- dataset_id
 
-JSDM_resultss <- fit_JSDM(Y, X_pca, cfg, seed)
-SDM_results  <- fit_SDM(Y, X_pca, cfg, seed)
+JSDM_resultss <- fit_JSDM(Y, X_pca, config, seed)
+SDM_results  <- fit_SDM(Y, X_pca, config, seed)
 
 output_dir <- "results"
 dir.create(output_dir, showWarnings = FALSE)
