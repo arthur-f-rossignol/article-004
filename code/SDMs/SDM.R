@@ -11,17 +11,17 @@
 ##                                                                            ##
 ################################################################################
 
-# SDM.1   lm | glm | lmer | glmer   stats | lme4    frequentist   no-ORLE + ORLE
-# SDM.2   glmmTMB                   glmmTMB         frequentist   no-ORLE + ORLE
-# SDM.3   fitme                     spaMM           frequentist   no-ORLE + ORLE
-# SDM.4   mixed_model               GLMMadaptive    frequentist             ORLE
-# SDM.5   brm                       brms            Bayesian      no-ORLE + ORLE
-# SDM.6   inla                      INLA            Bayesian      no-ORLE + ORLE
-# SDM.7                             nimble          Bayesian      no-ORLE + ORLE
-# SDM.8                             runjags         Bayesian      no-ORLE + ORLE
-# SDM.9   lmrob | glmrob            robustbase      frequentist   no-ORLE
-# SDM.10  glm (quasi-likelihood)    stats           frequentist   no-ORLE 
-# SDM.11  gam | gamm                mgcv            frequentist   no-ORLE + ORLE
+# SDM.1   lm | glm | lmer | glmer   stats | lme4    frequentist   no-OLRE + OLRE
+# SDM.2   glmmTMB                   glmmTMB         frequentist   no-OLRE + OLRE
+# SDM.3   fitme                     spaMM           frequentist   no-OLRE + OLRE
+# SDM.4   mixed_model               GLMMadaptive    frequentist             OLRE
+# SDM.5   brm                       brms            Bayesian      no-OLRE + OLRE
+# SDM.6   inla                      INLA            Bayesian      no-OLRE + OLRE
+# SDM.7                             nimble          Bayesian      no-OLRE + OLRE
+# SDM.8                             runjags         Bayesian      no-OLRE + OLRE
+# SDM.9   lmrob | glmrob            robustbase      frequentist   no-OLRE
+# SDM.10  glm (quasi-likelihood)    stats           frequentist   no-OLRE 
+# SDM.11  gam | gamm                mgcv            frequentist   no-OLRE + OLRE
 
 ## PACKAGES ####################################################################
 
@@ -168,7 +168,7 @@ is_method_compatible <- function(method_name, data_model) {
 
 ## DATA GENERATION #############################################################
 
-generate_covariates <- function(n, seed) {
+covariates_generation <- function(n, seed) {
   
   set.seed(seed)
   
@@ -178,7 +178,7 @@ generate_covariates <- function(n, seed) {
   return(list(X1 = X1, X2 = X2))
 }
 
-generate_data <- function(n, X1, X2, model_type, seed) {
+data_generation <- function(n, X1, X2, model_type, seed) {
   
   set.seed(seed)
   
@@ -1091,23 +1091,23 @@ fit_model <- function(Y, X1, model_type, method) {
 
 ## SINGLE REPLICATE FUNCTION ###################################################
 
-run_single_replicate <- function(seed) {
+single_replicate <- function(seed) {
   
   set.seed(seed)
   
   all_results <- list()
   
-  covariates <- generate_covariates(n_obs, seed)
+  covariates <- covariates_generation(n_obs, seed)
   X1         <- covariates$X1
   X2         <- covariates$X2
   
   for (data_model in data_models) {
     
-    Y <- generate_data(n_obs,
-                       X1,
-                       X2,
-                       data_model,
-                       seed + which(data_models == data_model))
+    Y <- data_generation(n_obs,
+                         X1,
+                         X2,
+                         data_model,
+                         seed + which(data_models == data_model))
     
     model_results <- list(data_model  = data_model,
                           true_params = list(alpha       = alpha_true,
@@ -1117,6 +1117,7 @@ run_single_replicate <- function(seed) {
                           fits = list())
     
     for (method in fit_methods) {
+      
       if (!is_method_compatible(method, data_model)) {
         next
       }
@@ -1137,7 +1138,7 @@ run_single_replicate <- function(seed) {
   
   results <- list(seed       = seed,
                   timestamp  = Sys.time(),
-                  parameters = list(n_obs     = n_obs,
+                  parameters = list(n_obs       = n_obs,
                                     sigma_error = sigma_error),
                   results    = all_results)
   
@@ -1148,7 +1149,7 @@ run_single_replicate <- function(seed) {
 
 start_time <- Sys.time()
 
-results <- run_single_replicate(seed_value)
+results <- single_replicate(seed_value)
 
 end_time <- Sys.time()
 
