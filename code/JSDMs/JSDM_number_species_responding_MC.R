@@ -73,7 +73,7 @@ simulate_data <- function(replicate_id,
   colnames(B) <- paste0("sp", 1:n_sp)
   
   M <- X %*% B
-  Y <- matrix(NA_integer_, 
+  Y <- matrix(NA, 
               nrow = n_obs, 
               ncol = n_sp,
               dimnames = list(NULL, paste0("sp", 1:n_sp)))
@@ -98,28 +98,28 @@ initialize_results <- function(n_sp,
   
   list(
     # fixed effects
-    alpha_estimates       = rep(NA_real_, n_sp),
-    alpha_standard_errors = rep(NA_real_, n_sp),
-    beta_estimates        = rep(NA_real_, n_sp),
-    beta_standard_errors  = rep(NA_real_, n_sp),
-    gamma_estimates       = rep(NA_real_, n_sp),
-    gamma_standard_errors = rep(NA_real_, n_sp),
+    alpha_estimates       = rep(NA, n_sp),
+    alpha_standard_errors = rep(NA, n_sp),
+    beta_estimates        = rep(NA, n_sp),
+    beta_standard_errors  = rep(NA, n_sp),
+    gamma_estimates       = rep(NA, n_sp),
+    gamma_standard_errors = rep(NA, n_sp),
     # latent structure
     n_lv             = n_lv,
     latent_variables = NULL,
     loadings         = NULL,
-    sigma_lv         = NA_real_,                   # JSDM.1 only
-    sigma_W_estimate = rep(NA_real_, n_lv),        # JSDM.6 only
-    sigma_W_se       = rep(NA_real_, n_lv),        # JSDM.6 only
+    sigma_lv         = NA,                   # JSDM.1 only
+    sigma_W_estimate = rep(NA, n_lv),        # JSDM.6 only
+    sigma_W_se       = rep(NA, n_lv),        # JSDM.6 only
     # convergence diagnostics
     convergence      = FALSE,
-    ess_alpha        = NA_real_,
-    ess_beta         = NA_real_,
-    ess_gamma        = NA_real_,
-    psrf_max         = NA_real_,             # Gelman-Rubin (JSDM.3–6)
-    geweke_max       = NA_real_,             # Geweke (JSDM.2)
+    ess_alpha        = NA,
+    ess_beta         = NA,
+    ess_gamma        = NA,
+    psrf_max         = NA,             # Gelman-Rubin (JSDM.3–6)
+    geweke_max       = NA,             # Geweke (JSDM.2)
     # computation time
-    computation_time = NA_real_)
+    computation_time = NA)
 }
 
 ## JSDM.1 ######################################################################
@@ -170,7 +170,7 @@ fit_JSDM.1 <- function(Y,
   result$n_lv             <- ncol(result$latent_variables)
   result$loadings         <- fit$params$theta
   result$sigma_lv         <- if (!is.null(fit$params$sigma.lv)) 
-                               as.numeric(fit$params$sigma.lv) else NA_real_
+                               as.numeric(fit$params$sigma.lv) else NA
   
   result$convergence <- fit$convergence
   
