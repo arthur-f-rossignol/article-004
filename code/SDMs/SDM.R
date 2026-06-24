@@ -234,7 +234,7 @@ fit_SDM.1 <- function(Y,
   summary_fit <- summary(fit)
   
   if (use_OLRE) {
-    result <- list(alpha_est. = summary_fit$coefficients[1, 1],
+    result <- list(alpha_est  = summary_fit$coefficients[1, 1],
                    alpha_SE   = summary_fit$coefficients[1, 2],
                    beta_est   = summary_fit$coefficients[2, 1],
                    beta_SE    = summary_fit$coefficients[2, 2],
