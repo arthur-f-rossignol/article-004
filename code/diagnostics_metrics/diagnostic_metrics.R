@@ -18,10 +18,10 @@ library(dplyr)
 
 ## COVERAGE RATE (CR) ##########################################################
 
-compute_CR <- function(estimates,
-                       SEs, 
-                       true_value, 
-                       converged = NULL) {
+coverage_rate <- function(estimates,
+                          SEs, 
+                          true_value, 
+                          converged = NULL) {
   
   n <- length(estimates)
 
@@ -35,23 +35,23 @@ compute_CR <- function(estimates,
 
 ## ROOT MEAN SQUARE ERROR (RMSE) ###############################################
 
-compute_RMSE <- function(estimates, 
-                         true_value) {
+RMSE <- function(estimates,
+                 true_value) {
   sqrt(mean((estimates - true_value)^2, na.rm = TRUE))
 }
 
 ## ROOT MEAN SQUARE RANDOM ERROR (RMSRE) #######################################
 
-compute_RMSRE <- function(estimates, 
-                          SEs,
-                          true_value) {
+RMSRE <- function(estimates, 
+                  SEs,
+                  true_value) {
   sqrt(mean((estimates - true_value)^2 + SEs^2, na.rm = TRUE))
 }
 
 ## BIAS SIGNIFICANCE ###########################################################
 
-compute_bias_significance <- function(estimates, 
-                                      true_value) {
+bias_significance <- function(estimates,
+                              true_value) {
   
   test <- summary(lmrob(estimates - true_value ~ 1,
                           data = as.data.frame(estimates)))$coefficients[4]
@@ -81,7 +81,9 @@ get_magnitude_levels <- function(data_model) {
   }
 }
 
-compute_bias_magnitude <- function(estimates, true_value, data_model) {
+bias_magnitude <- function(estimates, 
+                           true_value, 
+                           data_model) {
   
   pop <- estimates - true_value
   pop <- pop[is.finite(pop)]
@@ -116,9 +118,9 @@ compute_bias_magnitude <- function(estimates, true_value, data_model) {
 
 ## COVERAGE RATE SIGNIFICANCE ##################################################
 
-compute_CR_significance <- function(estimates,
-                                    SEs, 
-                                    true_value) {
+coverage_rate_significance <- function(estimates,
+                                       SEs, 
+                                       true_value) {
 
   CI_lower <- estimates - 1.96 * SEs
   CI_upper <- estimates + 1.96 * SEs
@@ -146,24 +148,24 @@ compute_CR_significance <- function(estimates,
 
 ## USAGE SKETCH FOR A PER-REPLICATE DATA FRAME #################################
 
-d %>%
+df %>%
   group_by(data_model, method) %>%
-  summarise(CR = compute_CR(coef_est,
-                            coef_se,
-                            beta_true),
-            RMSE = compute_RMSE(coef_est, 
-                                beta_true),
-            RMSRE = compute_RMSRE(coef_est, 
-                                  coef_se,
-                                  beta_true),
-            bias_significance = compute_bias_significance(coef_est, 
-                                                          beta_true),
-            bias_magnitude = compute_bias_magnitude(coef_est, 
-                                                    beta_true, 
-                                                    data_model),
-            CR_significance = compute_CR_significance(beta_true,
-                                                      coef_est,
-                                                      coef_se),
+  summarise(CR = coverage_rate(coef_est,
+                               coef_se,
+                               beta_true),
+            RMSE = RMSE(coef_est, 
+                        beta_true),
+            RMSRE = RMSRE(coef_est,
+                          coef_se,
+                          beta_true),
+            bias_significance = bias_significance(coef_est, 
+                                                   beta_true),
+            bias_magnitude = bias_magnitude(coef_est,
+                                            beta_true, 
+                                            data_model),
+            CR_significance = coverage_rate_significance(beta_true,
+                                                         coef_est,
+                                                         coef_se),
             .groups = "drop")
 
 ################################################################################
