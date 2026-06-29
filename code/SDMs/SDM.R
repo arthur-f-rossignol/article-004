@@ -43,10 +43,10 @@ library(INLA)
 
 ## ARGUMENTS FROM SLURM ########################################################
 
-args <- commandArgs(trailingOnly = TRUE)
+ARGS <- commandArgs(trailingOnly = TRUE)
 
-seed_value <- as.integer(args[1])
-results_dir <- args[2]
+seed_value <- as.integer(ARGS[1])
+results_dir <- ARGS[2]
 
 ## PARAMETERIZATION ############################################################
 
