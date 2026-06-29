@@ -89,8 +89,6 @@ SPLITS <- c("interpolation",
             "partial_extrapolation", 
             "full_extrapolation")
 
-training_prop <- 0.5
-
 CONFIG <- list(butterflies = list(n_pcs   = 4, 
                                   min_occ = 0.05, 
                                   max_occ = 0.95),
@@ -116,6 +114,8 @@ DEFAULT_PARAMS <- list(mcmc = list(n_iter_min   = 10000,
                                    conv_max     = 1.05,
                                    n_eff_min    = 5000,
                                    time_max     = 24))
+
+training_prop <- 0.5
 
 ## ARGUMENTS FROM SLURM ########################################################
 
