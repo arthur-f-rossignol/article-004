@@ -89,7 +89,7 @@ SPLITS <- c("interpolation",
             "partial_extrapolation", 
             "full_extrapolation")
 
-TRAIN_PROP <- 0.5
+training_prop <- 0.5
 
 CONFIG <- list(butterflies = list(n_pcs   = 4, 
                                   min_occ = 0.05, 
@@ -119,11 +119,11 @@ DEFAULT_PARAMS <- list(mcmc = list(n_iter_min   = 10000,
 
 ## ARGUMENTS FROM SLURM ########################################################
 
-args <- commandArgs(trailingOnly = TRUE)
+ARGS <- commandArgs(trailingOnly = TRUE)
 
-dataset_id <- as.integer(args[1])
-split_type <- as.integer(args[2])
-replicate  <- as.integer(args[3])
+dataset_id <- as.integer(ARGS[1])
+split_type <- as.integer(ARGS[2])
+replicate  <- as.integer(ARGS[3])
 
 dataset_name <- DATASETS[dataset_id]
 split_name   <- SPLITS[split_type]
@@ -639,7 +639,7 @@ data <- load_data(dataset_name)
 Y    <- filter_species(data$Y, config$min_occ, config$max_occ)
 pca  <- perform_pca(data$X, config$n_pcs)
 
-n_sp     <- ncol(Y)
+n_sp          <- ncol(Y)
 species_names <- colnames(Y)
 
 if (is.null(species_names)) {
@@ -649,9 +649,9 @@ if (is.null(species_names)) {
 seed <- 1000 + (dataset_id - 1) * 10000 + (split_type - 1) * 1000 + replicate
 
 if (split_type == 1) {
-  split <- interpolation_split(Y, pca$scores, TRAIN_PROP, seed)
+  split <- interpolation_split(Y, pca$scores, training_prop, seed)
 } else if (split_type == 2) {
-  split <- partial_extrapolation_split(Y, pca$scores, pca$pc1, TRAIN_PROP, seed)
+  split <- partial_extrapolation_split(Y, pca$scores, pca$pc1, training_prop, seed)
 } else {
   split <- full_extrapolation_split(Y, pca$scores, pca$pc1)
 }
