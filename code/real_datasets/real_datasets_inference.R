@@ -58,9 +58,9 @@ DEFAULT_PARAMS <- list(mcmc = list(n_iter_min   = 10000,
 
 ## ARGUMENTS FROM SLURM ########################################################
 
-args <- commandArgs(trailingOnly = TRUE)
+ARGS <- commandArgs(trailingOnly = TRUE)
 
-dataset_id   <- as.integer(args[1])
+dataset_id   <- as.integer(ARGS[1])
 dataset_name <- DATASETS[dataset_id]
 config       <- config[[dataset_name]]
 
