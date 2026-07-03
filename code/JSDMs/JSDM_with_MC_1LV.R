@@ -182,7 +182,6 @@ fit_JSDM.1 <- function(Y,
 
   if (fit$num.lv > 0) {
     result$latent_variables     <- fit$lvs
-    result$num_latent_variables <- ncol(result$latent_variables)
     result$loadings             <- fit$params$theta
   }
   
