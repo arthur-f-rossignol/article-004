@@ -443,12 +443,13 @@ fit_SDM.5 <- function(Y,
   result <- list(alpha_est = post_summary["b_Intercept", "Estimate"],
                  alpha_SE  = post_summary["b_Intercept", "Est.Error"],
                  beta_est  = post_summary["b_X1", "Estimate"],
-                 beta_SE   = post_summary["b_X1", "Est.Error"],
-                 converged = NA)
+                 beta_SE   = post_summary["b_X1", "Est.Error"])
   
   rhat_vals <- rhat(fit)
   if (any(rhat_vals > 1.1, na.rm = TRUE)) {
     result$converged <- FALSE
+  } else {
+    result$converged <- TRUE
   }
   
   if (use_OLRE) {
