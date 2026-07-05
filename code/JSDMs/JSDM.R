@@ -237,7 +237,7 @@ fit_JSDM.1 <- function(Y,
   if (fit$num.lv > 0) {
     result$latent_variables <- fit$lvs
     result$loadings         <- fit$params$theta
-    result$sigma_lv <- fit$params$sigma.lv
+    result$sigma_lv         <- fit$params$sigma.lv
   }
   
   result$convergence <- fit$convergence
