@@ -41,6 +41,14 @@ if (length(ARGS) >= 4) {
   methods <- 1:6
 }
 
+if (length(ARGS) >= 5) {
+  n_lv <- as.integer(ARGS[5])
+}
+
+if (length(ARGS) >= 6) {
+  missing_covariate <- as.logical(ARGS[6])
+}
+
 ## MAIN PARAMETERS #############################################################
 
 DEFAULT_PARAMS <- list(n_obs             = 1000,     # number of sites
@@ -1341,12 +1349,9 @@ run_JSDM <- function(seed,
   if (is.null(params)) {
     params <- DEFAULT_PARAMS
   }
-  if (!dir.exists(results_dir)) {
-    dir.create(results_dir, recursive = TRUE)
-  }
 
   scenarios <- build_scenarios(params$n_sp)
-  scenario <- scenarios[[scenario_id]]
+  scenario  <- scenarios[[scenario_id]]
 
   data <- simulate_data(seed     = seed,
                         scenario = scenario,
@@ -1441,12 +1446,12 @@ run_JSDM <- function(seed,
 
 params <- DEFAULT_PARAMS
 
-if (length(ARGS) >= 5) {
-  params$n_lv <- as.integer(ARGS[5])
+if (!is.null(n_lv)) {
+  params$n_lv <- n_lv
 }
 
-if (length(ARGS) >= 6) {
-  params$missing_covariate <- as.logical(ARGS[6])
+if (!is.null(missing_covariate)) {
+  params$missing_covariate <- missing_covariate
 }
 
 run_JSDM(seed        = seed,
