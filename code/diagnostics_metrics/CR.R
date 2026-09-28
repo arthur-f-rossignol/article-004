@@ -67,8 +67,8 @@ compute_CR <- function(estimates,
     significance <- ""
   }
 
-  list(coverage     = coverage,
-       significance = significance)
+  return(list(coverage     = coverage,
+              significance = significance))
 }
 
 ################################################################################
