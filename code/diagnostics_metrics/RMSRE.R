@@ -13,7 +13,7 @@
 ################################################################################
 
 compute_RMSRE <- function(estimates, ses, true_value) {
-  sqrt(mean((estimates - true_value)^2 + ses^2, na.rm = TRUE))
+  return(sqrt(mean((estimates - true_value)^2 + ses^2, na.rm = TRUE)))
 }
 
 ################################################################################
