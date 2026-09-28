@@ -20,7 +20,10 @@ compute_CR <- function(estimates,
                        target_CR = 0.05) {
 
   n <- length(estimates)
-  if (is.null(converged)) converged <- rep(TRUE, n)
+  
+  if (is.null(converged)) {
+    converged <- rep(TRUE, n)
+  }
 
   CI_lower <- estimates - z * SEs
   CI_upper <- estimates + z * SEs
