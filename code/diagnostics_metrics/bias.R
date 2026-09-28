@@ -12,9 +12,6 @@
 ##                                                                            ##
 ################################################################################
 
-## Single entry point returning the bias value, its significance stars and
-## its magnitude code for a vector of replicate estimates.
-
 compute_bias <- function(estimates, true_value, data_model) {
 
   if (length(estimates) < 2 || all(is.na(estimates))) {
@@ -26,17 +23,9 @@ compute_bias <- function(estimates, true_value, data_model) {
   pop <- estimates - true_value
   pop <- pop[is.finite(pop)]
 
-  if (length(pop) < 1) {
-    return(list(value        = NA,
-                significance = "",
-                magnitude    = ""))
-  }
+  value_mean_bias <- mean(pop)
 
-  ## computation: mean bias over the replicates
-
-  value <- mean(pop)
-
-  ## significance: robust one-sample test of a zero location
+  value_median_bias <- median(pop)
 
   test <- summary(lmrob(pop ~ 1,
                         data = as.data.frame(pop)))$coefficients[4]
@@ -50,19 +39,15 @@ compute_bias <- function(estimates, true_value, data_model) {
   } else {
     significance <- ""
   }
-
-  ## magnitude: "0" if 95% of biases fall within the closed band [-L, L],
-  ## "+" / "-" if 95% exceed it upward / downward; one symbol per level,
-  ## minus signs separated by spaces so they do not merge visually
-
-  levels  <- get_magnitude_levels(data_model)
-  n0      <- sum(vapply(levels,
+  
+  magnitude_levels  <- c(0.05, 0.1, 0.5, 1)
+  n0      <- sum(vapply(magnitude_levels,
                         function(L) mean(pop >= -L & pop <= L) >= 0.95,
                         logical(1)))
-  nplus   <- sum(vapply(levels,
+  nplus   <- sum(vapply(magnitude_levels,
                         function(L) mean(pop >= L) >= 0.95,
                         logical(1)))
-  nminus  <- sum(vapply(levels,
+  nminus  <- sum(vapply(magnitude_levels,
                         function(L) mean(pop <= -L) >= 0.95,
                         logical(1)))
 
@@ -70,18 +55,10 @@ compute_bias <- function(estimates, true_value, data_model) {
                       strrep("+", nplus),
                       paste(rep("-", nminus), collapse = " "))
 
-  list(value        = value,
+  list(mean_bias    = value_mean_bias,
+       median_bias  = value_median_bias,
        significance = significance,
        magnitude    = magnitude)
-}
-
-## magnitude thresholds per data model
-
-magnitude_levels <- c(0.05, 0.1, 0.5, 1)
-
-get_magnitude_levels <- function(data_model) {
-  ## kept for API compatibility: the levels no longer depend on the family
-  magnitude_levels
 }
 
 ################################################################################
