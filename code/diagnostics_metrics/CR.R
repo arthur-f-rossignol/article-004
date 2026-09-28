@@ -12,9 +12,6 @@
 ##                                                                            ##
 ################################################################################
 
-## Single entry point returning the coverage rate and its significance stars
-## for a vector of replicate estimates and standard errors.
-
 compute_CR <- function(estimates,
                        SEs,
                        true_value,
@@ -28,16 +25,11 @@ compute_CR <- function(estimates,
   CI_lower <- estimates - z * SEs
   CI_upper <- estimates + z * SEs
 
-  ## computation: coverage rate over the converged replicates
-
   covered <- ifelse(converged & !is.na(SEs),
                     true_value >= CI_lower & true_value <= CI_upper,
                     NA)
 
   coverage <- mean(covered, na.rm = TRUE)
-
-  ## significance: randomized exact binomial test of the non-coverage rate
-  ## against the target error rate
 
   valid <- is.finite(CI_lower) & is.finite(CI_upper)
 
