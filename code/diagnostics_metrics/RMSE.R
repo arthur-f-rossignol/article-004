@@ -13,7 +13,7 @@
 ################################################################################
 
 compute_RMSE <- function(estimates, true_value) {
-  sqrt(mean((estimates - true_value)^2, na.rm = TRUE))
+  return(sqrt(mean((estimates - true_value)^2, na.rm = TRUE)))
 }
 
 ################################################################################
