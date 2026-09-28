@@ -52,9 +52,10 @@ compute_CR <- function(estimates,
   u <- runif(1)
 
   crude <- pbinom(m.neg + m.pos - 1, 
-                  size = N, prob = target_CR) + u * dbinom(m.neg + m.pos, 
-                                                           size = N, 
-                                                           prob = target_CR)
+                  size = N, 
+                  prob = target_CR) + u * dbinom(m.neg + m.pos, 
+                                                 size = N, 
+                                                 prob = target_CR)
   test <- min(crude, 1 - crude) * 2
 
   if (test < 0.001) {
