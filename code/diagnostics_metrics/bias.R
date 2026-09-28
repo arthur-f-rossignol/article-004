@@ -55,10 +55,10 @@ compute_bias <- function(estimates, true_value, data_model) {
                       strrep("+", nplus),
                       paste(rep("-", nminus), collapse = " "))
 
-  list(mean_bias    = value_mean_bias,
-       median_bias  = value_median_bias,
-       significance = significance,
-       magnitude    = magnitude)
+  return(list(mean_bias    = value_mean_bias,
+              median_bias  = value_median_bias,
+              significance = significance,
+              magnitude    = magnitude))
 }
 
 ################################################################################
