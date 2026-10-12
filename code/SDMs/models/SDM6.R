@@ -40,8 +40,8 @@ fit_SDM.6 <- function(Y,
            "identity")
   }
   
-  family <- get_family_inla(model_type)
-  link_spec   <- get_link_inla(model_type)
+  family    <- get_family_inla(model_type)
+  link_spec <- get_link_inla(model_type)
 
   if (use_OLRE) {
     formula_inla <- Y ~ X1 + f(obs_id, model = "iid")
