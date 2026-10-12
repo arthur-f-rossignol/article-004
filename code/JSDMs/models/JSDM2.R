@@ -34,8 +34,6 @@ fit_JSDM.2 <- function(Y,
 
   n_chains <- mcmc_params$n_chains
 
-  # overdispersed starting values and distinct seed for each chain
-
   beta_start_chain   <- seq(-0.5, 0.5, length.out = n_chains)
   lambda_start_chain <- seq(0.5, 1.5, length.out = n_chains)
   seed_chain         <- seed + (1:n_chains - 1) * 1000000
@@ -78,12 +76,6 @@ fit_JSDM.2 <- function(Y,
                                                  start_time,
                                                  units = "secs"))
 
-  chain_failed <- sapply(fits, function(fit) inherits(fit, "try-error"))
-
-  if (any(chain_failed)) {
-    stop("Error: at least one jSDM chain failed.\n")
-  }
-
   n_covars <- length(covariates) + 1
 
   mean_beta <- matrix(NA, nrow = n_sp, ncol = n_covars)
@@ -100,11 +92,7 @@ fit_JSDM.2 <- function(Y,
 
   for (j in 1:n_sp) {
 
-    # chains of species j gathered in a single coda object
-
     sp_chains <- coda::mcmc.list(lapply(fits, function(fit) fit$mcmc.sp[[j]]))
-
-    # posterior summaries computed on the pooled draws
 
     sp_samples <- as.matrix(sp_chains)
 
@@ -130,8 +118,6 @@ fit_JSDM.2 <- function(Y,
     if (fit_gamma && length(ess_all) >= 3) {
       ess_gamma[j] <- ess_all[3]
     }
-
-    # Gelman-Rubin diagnostic on the species regression coefficients
 
     gelman_diagnostic <- coda::gelman.diag(sp_chains[, 1:n_covars],
                                            multivariate = FALSE,
