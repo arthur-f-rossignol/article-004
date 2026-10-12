@@ -1,6 +1,6 @@
 ################################################################################
 ##                                                                            ##
-##                   REAL ECOLOGICAL DATASETS • PREDICTION                    ##
+##                EMPIRICAL ECOLOGICAL DATASETS • PREDICTION                  ##
 ##           (real_datasets/prediction/real_datasets_prediction.R)            ##
 ##                                                                            ##
 ##       Addressing Missing Covariates in Species Distribution Models:        ##
