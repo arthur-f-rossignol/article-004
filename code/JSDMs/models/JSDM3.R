@@ -37,15 +37,13 @@ fit_JSDM.3 <- function(Y,
     random_level       <- Hmsc::HmscRandomLevel(units = studyDesign$site)
     random_level$nfMin <- n_lv
     random_level$nfMax <- n_lv
-
     model <- Hmsc::Hmsc(Y           = Y,
                         XData       = X_data,
                         XFormula    = XFormula,
                         studyDesign = studyDesign,
                         ranLevels   = list(site = random_level),
                         distr       = "probit")
-  }
-  else {
+  } else {
     model <- Hmsc::Hmsc(Y        = Y,
                         XData    = X_data,
                         XFormula = XFormula,
