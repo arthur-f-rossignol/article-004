@@ -1,6 +1,6 @@
 ################################################################################
 ##                                                                            ##
-##                    REAL ECOLOGICAL DATASETS • INFERENCE                    ##
+##                 EMPIRICAL ECOLOGICAL DATASETS • INFERENCE                  ##
 ##            (real_datasets/inference/real_datasets_inference.R)             ##
 ##                                                                            ##
 ##       Addressing Missing Covariates in Species Distribution Models:        ##
