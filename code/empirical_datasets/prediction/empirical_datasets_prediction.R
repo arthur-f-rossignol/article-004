@@ -83,7 +83,7 @@ N_DRAWS_TARGET <- 2000
 
 dataset_name <- DATASETS[dataset_id]
 split_name   <- SPLITS[split_type]
-cfg          <- CONFIGS[[dataset_name]]
+config       <- CONFIGS[[dataset_name]]
 
 seed <- 1000 + (dataset_id - 1) * 10000 + (split_type - 1) * 1000 + replicate
 
@@ -498,7 +498,7 @@ run_one_chain <- function(Y,
 
 fit_JSDM <- function(Y,
                      X,
-                     cfg,
+                     config,
                      seed) {
   
   Y <- as.matrix(Y)
@@ -552,10 +552,14 @@ fit_JSDM <- function(Y,
     }))
     return(coda::mcmc(out))
   }))
-  rhat <- tryCatch(max(coda::gelman.diag(chains, multivariate = FALSE,
-                                         autoburnin = FALSE)$psrf[, 1], na.rm = TRUE),
+  
+  rhat <- tryCatch(max(coda::gelman.diag(chains, 
+                                         multivariate = FALSE,
+                                         autoburnin = FALSE)$psrf[, 1], 
+                       na.rm = TRUE),
                    error = function(e) return(NA))
-  neff <- tryCatch(min(coda::effectiveSize(chains), na.rm = TRUE),
+  neff <- tryCatch(min(coda::effectiveSize(chains), 
+                       na.rm = TRUE),
                    error = function(e) return(NA))
   
   n_sp      <- length(fits[[1]]$mcmc.sp)
@@ -596,7 +600,7 @@ fit_JSDM <- function(Y,
 
 fit_SDM <- function(Y,
                     X,
-                    cfg,
+                    config,
                     seed) {
   
   Y <- as.matrix(Y)
@@ -804,8 +808,8 @@ compute_loglik_SDM <- function(Y_test,
 t_start <- Sys.time()
 
 data <- data_loading(dataset_name)
-Y    <- species_filtering(data$Y, cfg$min_occ, cfg$max_occ)
-pca  <- PCA(data$X, cfg$n_pcs)
+Y    <- species_filtering(data$Y, config$min_occ, config$max_occ)
+pca  <- PCA(data$X, config$n_pcs)
 
 n_sp          <- ncol(Y)
 species_names <- colnames(Y)
@@ -821,8 +825,8 @@ split <- if (split_type == 1) {
   full_extrapolation_split(Y, pca$scores, pca$pc1)
 }
 
-JSDM_result <- fit_JSDM(split$Y_tr, split$X_tr, cfg, seed)
-SDM_result  <- fit_SDM(split$Y_tr, split$X_tr, cfg, seed)
+JSDM_result <- fit_JSDM(split$Y_tr, split$X_tr, config, seed)
+SDM_result  <- fit_SDM(split$Y_tr, split$X_tr, config, seed)
 
 JSDM_loglik <- compute_loglik_JSDM(split$Y_val,
                                    split$X_val,
@@ -862,7 +866,8 @@ model_info <- list(engine           = "jSDM::jSDM_binomial_probit",
                    sdm_diagnostics  = SDM_result$diagnostics,
                    jsdm_settings    = JSDM_result$mcmc_settings,
                    sdm_settings     = SDM_result$mcmc_settings,
-                   total_time       = as.numeric(difftime(Sys.time(), t_start,
+                   total_time       = as.numeric(difftime(Sys.time(),
+                                                          t_start,
                                                           units = "secs")))
 
 dir.create(file.path(results_dir, dataset_name),
