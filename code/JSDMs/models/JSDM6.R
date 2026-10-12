@@ -35,9 +35,7 @@ fit_JSDM.6 <- function(Y,
   result <- results_initialization(n_sp, n_lv)
 
   if (n_lv > 0) {
-    # Build the lower-triangular lambda constraint block conditionally:
-    # JAGS ranges like 1:(n_lv-1) are never empty (1:0 = c(1,0)), so each
-    # loop must be omitted entirely when its index set is empty.
+    
     lambda_upper_str <- ""
     if (n_lv > 1) {
       lambda_upper_str <- "
@@ -96,8 +94,9 @@ fit_JSDM.6 <- function(Y,
           lambda[i, i] <- 1
         }", lambda_lower_str, lambda_free_str, "
       }")
-  }
-  else {
+
+  } else {
+    
     model_str <- "
       model {
         for(i in 1:n_obs) {
