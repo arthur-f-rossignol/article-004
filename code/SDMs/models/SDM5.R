@@ -70,11 +70,11 @@ fit_SDM.5 <- function(Y,
   result$converged <- !any(rhat_vals > 1.1, na.rm = TRUE)
   
   if (use_OLRE) {
-    re_summary <- VarCorr(fit, summary = TRUE)
-    sd_site <- re_summary$obs_id$sd[1, "Estimate"]
+    re_summary        <- VarCorr(fit, summary = TRUE)
+    sd_site           <- re_summary$obs_id$sd[1, "Estimate"]
     result$sigma2_est <- sd_site^2
   } else if (model_type == "gaussian") {
-    sigma_est <- posterior_summary(fit, pars = "sigma")["sigma", "Estimate"]
+    sigma_est         <- posterior_summary(fit, pars = "sigma")["sigma", "Estimate"]
     result$sigma2_est <- sigma_est^2
   }
   
