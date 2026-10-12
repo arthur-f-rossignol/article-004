@@ -4,7 +4,7 @@
 ##      (empirical_datasets/prediction/empirical_datasets_prediction.R)       ##
 ##                                                                            ##
 ##       Addressing Missing Covariates in Species Distribution Models:        ##
-##  Inferential Impacts and Mitigation via Joint Species Distribution Models  ##
+##       Inferential Impacts and Mitigation via Joint Species Modeling        ##
 ##                                                                            ##
 ##                  Arthur F. Rossignol & Frédéric Gosselin                   ##
 ##                                                                            ##
