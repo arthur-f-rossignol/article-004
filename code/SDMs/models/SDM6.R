@@ -49,8 +49,11 @@ fit_SDM.6 <- function(Y,
     formula_inla <- Y ~ X1
   }
 
-  # INLA binomial requires explicit Ntrials
-  Ntrials <- if (family == "binomial") rep(1L, length(Y)) else NULL
+  if (family == "binomial") {
+    Ntrials <- rep(1, length(Y)) 
+  } else {
+    Ntrials <- NULL
+  }
 
   fit <- inla(formula           = formula_inla,
               family            = family,
