@@ -4,7 +4,7 @@
 ##                           (JSDMs/models/JSDM2.R)                           ##
 ##                                                                            ##
 ##       Addressing Missing Covariates in Species Distribution Models:        ##
-##  Inferential Impacts and Mitigation via Joint Species Distribution Models  ##
+##       Inferential Impacts and Mitigation via Joint Species Modeling        ##
 ##                                                                            ##
 ##                  Arthur F. Rossignol & Frédéric Gosselin                   ##
 ##                                                                            ##
