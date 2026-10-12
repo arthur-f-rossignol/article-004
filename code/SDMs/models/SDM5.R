@@ -19,7 +19,9 @@ fit_SDM.5 <- function(Y,
                       seed) {
   
   obs_id  <- factor(seq_along(Y))
-  data_df <- data.frame(Y = Y, X1 = X1, obs_id = obs_id)
+  data_df <- data.frame(Y      = Y,
+                        X1     = X1, 
+                        obs_id = obs_id)
   
   get_family_brms <- function(model_type) {
     switch(model_type,
@@ -50,11 +52,12 @@ fit_SDM.5 <- function(Y,
              family  = family,
              prior   = prior_spec,
              chains  = 3,
-             iter    = 40000,
+             iter    = 50000,
              warmup  = 20000,
              thin    = 5,
              cores   = 3,
-             control = list(adapt_delta = 0.95, max_treedepth = 12),
+             control = list(adapt_delta = 0.95, 
+                            max_treedepth = 12),
              seed    = seed)
   
   post_summary <- posterior_summary(fit, pars = c("b_Intercept", "b_X1"))
