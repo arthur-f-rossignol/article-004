@@ -37,7 +37,6 @@ fit_JSDM.5 <- function(Y,
   if (n_lv > 0) {
     
     lambda_upper_str <- ""
-    
     if (n_lv > 1) {
       lambda_upper_str <- "
         for(i in 1:(n_lv - 1)) {
