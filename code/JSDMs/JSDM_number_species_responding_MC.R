@@ -159,7 +159,7 @@ results_initialization <- function(n_sp,
 ## RESULT ASSEMBLY #############################################################
 
 assemble_results <- function(model_results,
-                             truth,
+                             true_parameter,
                              run,
                              settings) {
 
@@ -174,13 +174,13 @@ assemble_results <- function(model_results,
     model <- model_results[[model_name]]
 
     for (parameter in c("alpha", "beta", "gamma")) {
-      block <- data.frame(model     = model_name,
-                          species   = model$estimates$species,
-                          parameter = parameter,
-                          truth     = truth[[parameter]],
-                          estimate  = model$estimates[[parameter]],
-                          std_error = model$standard_errors[[parameter]],
-                          converged = model$converged)
+      block <- data.frame(model          = model_name,
+                          species        = model$estimates$species,
+                          parameter      = parameter,
+                          true_parameter = true_parameter[[parameter]],
+                          estimate       = model$estimates[[parameter]],
+                          std_error      = model$standard_errors[[parameter]],
+                          converged      = model$converged)
 
       coefficients <- rbind(coefficients, block)
     }
@@ -203,12 +203,12 @@ assemble_results <- function(model_results,
   rownames(coefficients) <- NULL
   rownames(diagnostics)  <- NULL
 
-  results <- list(run          = run,
-                  settings     = settings,
-                  truth        = truth,
-                  coefficients = coefficients,
-                  diagnostics  = diagnostics,
-                  latent       = latent)
+  results <- list(run            = run,
+                  settings       = settings,
+                  true_parameter = true_parameter,
+                  coefficients   = coefficients,
+                  diagnostics    = diagnostics,
+                  latent         = latent)
 
   return(results)
 }
@@ -251,10 +251,10 @@ model_result <- fit_functions[[model_id]](Y           = data$Y,
 model_results               <- list()
 model_results[[model_name]] <- model_result
 
-truth <- data.frame(species = paste0("sp", 1:DEFAULT_PARAMS$n_sp),
-                    alpha   = as.vector(data$B["alpha", ]),
-                    beta    = as.vector(data$B["beta", ]),
-                    gamma   = as.vector(data$B["gamma", ]))
+true_parameter <- data.frame(species = paste0("sp", 1:DEFAULT_PARAMS$n_sp),
+                             alpha   = as.vector(data$B["alpha", ]),
+                             beta    = as.vector(data$B["beta", ]),
+                             gamma   = as.vector(data$B["gamma", ]))
 
 run <- list(task_id      = task_id,
             model_id     = model_id,
@@ -269,10 +269,10 @@ settings <- list(n_obs = DEFAULT_PARAMS$n_obs,
                  n_lv  = DEFAULT_PARAMS$n_lv,
                  mcmc  = DEFAULT_PARAMS$mcmc)
 
-results <- assemble_results(model_results = model_results,
-                            truth         = truth,
-                            run           = run,
-                            settings      = settings)
+results <- assemble_results(model_results  = model_results,
+                            true_parameter = true_parameter,
+                            run            = run,
+                            settings       = settings)
 
 file_name <- file.path(results_dir, sprintf("%s_k%02d_rep%03d.RData",
                                             gsub("\\.", "", model_name),
