@@ -191,7 +191,7 @@ models_dir <- script_dir
 ## RESULT ASSEMBLY #############################################################
 
 assemble_results <- function(fits,
-                             truth,
+                             true_parameter,
                              run,
                              settings) {
 
@@ -210,15 +210,15 @@ assemble_results <- function(fits,
   for (fit in fits) {
 
     for (parameter in c("alpha", "beta")) {
-      block <- data.frame(data_model = scalar(fit$data_model),
-                          method     = scalar(fit$method),
-                          SDM        = scalar(fit$SDM_label),
-                          OLRE       = scalar(fit$OLRE),
-                          parameter  = parameter,
-                          truth      = scalar(truth[[parameter]]),
-                          estimate   = scalar(fit[[paste0(parameter, "_est")]]),
-                          std_error  = scalar(fit[[paste0(parameter, "_SE")]]),
-                          converged  = scalar(fit$converged))
+      block <- data.frame(data_model     = scalar(fit$data_model),
+                          method         = scalar(fit$method),
+                          SDM            = scalar(fit$SDM_label),
+                          OLRE           = scalar(fit$OLRE),
+                          parameter      = parameter,
+                          true_parameter = scalar(true_parameter[[parameter]]),
+                          estimate       = scalar(fit[[paste0(parameter, "_est")]]),
+                          std_error      = scalar(fit[[paste0(parameter, "_SE")]]),
+                          converged      = scalar(fit$converged))
 
       coefficients <- rbind(coefficients, block)
     }
@@ -236,11 +236,11 @@ assemble_results <- function(fits,
   rownames(coefficients) <- NULL
   rownames(diagnostics)  <- NULL
 
-  results <- list(run          = run,
-                  settings     = settings,
-                  truth        = truth,
-                  coefficients = coefficients,
-                  diagnostics  = diagnostics)
+  results <- list(run            = run,
+                  settings       = settings,
+                  true_parameter = true_parameter,
+                  coefficients   = coefficients,
+                  diagnostics    = diagnostics)
 
   return(results)
 }
@@ -365,10 +365,10 @@ fits <- single_replicate(seed)
 
 end_time <- Sys.time()
 
-truth <- list(alpha       = alpha_true,
-              beta        = beta_true,
-              gamma       = gamma_true,
-              sigma_error = sigma_error)
+true_parameter <- list(alpha       = alpha_true,
+                       beta        = beta_true,
+                       gamma       = gamma_true,
+                       sigma_error = sigma_error)
 
 run <- list(seed       = seed,
             timestamp  = Sys.time(),
@@ -379,10 +379,10 @@ run <- list(seed       = seed,
 settings <- list(n_obs       = n_obs,
                  sigma_error = sigma_error)
 
-results <- assemble_results(fits     = fits,
-                            truth    = truth,
-                            run      = run,
-                            settings = settings)
+results <- assemble_results(fits           = fits,
+                            true_parameter = true_parameter,
+                            run            = run,
+                            settings       = settings)
 
 output_file <- file.path(results_dir, sprintf("replicate_%06d.RData", seed))
 
