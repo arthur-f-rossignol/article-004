@@ -231,7 +231,7 @@ results_initialization <- function(n_sp,
 ## RESULT ASSEMBLY #############################################################
 
 assemble_results <- function(model_results,
-                             truth,
+                             true_parameter,
                              run,
                              settings) {
 
@@ -246,13 +246,13 @@ assemble_results <- function(model_results,
     model <- model_results[[model_name]]
 
     for (parameter in c("alpha", "beta", "gamma")) {
-      block <- data.frame(model     = model_name,
-                          species   = model$estimates$species,
-                          parameter = parameter,
-                          truth     = truth[[parameter]],
-                          estimate  = model$estimates[[parameter]],
-                          std_error = model$standard_errors[[parameter]],
-                          converged = model$converged)
+      block <- data.frame(model          = model_name,
+                          species        = model$estimates$species,
+                          parameter      = parameter,
+                          true_parameter = true_parameter[[parameter]],
+                          estimate       = model$estimates[[parameter]],
+                          std_error      = model$standard_errors[[parameter]],
+                          converged      = model$converged)
 
       coefficients <- rbind(coefficients, block)
     }
@@ -275,12 +275,12 @@ assemble_results <- function(model_results,
   rownames(coefficients) <- NULL
   rownames(diagnostics)  <- NULL
 
-  results <- list(run          = run,
-                  settings     = settings,
-                  truth        = truth,
-                  coefficients = coefficients,
-                  diagnostics  = diagnostics,
-                  latent       = latent)
+  results <- list(run            = run,
+                  settings       = settings,
+                  true_parameter = true_parameter,
+                  coefficients   = coefficients,
+                  diagnostics    = diagnostics,
+                  latent         = latent)
 
   return(results)
 }
@@ -311,10 +311,10 @@ run_JSDM <- function(seed,
 
   covariates <- select_covariates(data, params$missing_covariate)
 
-  truth <- data.frame(species = paste0("sp", 1:params$n_sp),
-                      alpha   = as.vector(data$B["alpha", ]),
-                      beta    = as.vector(data$B["beta", ]),
-                      gamma   = as.vector(data$B["gamma", ]))
+  true_parameter <- data.frame(species = paste0("sp", 1:params$n_sp),
+                               alpha   = as.vector(data$B["alpha", ]),
+                               beta    = as.vector(data$B["beta", ]),
+                               gamma   = as.vector(data$B["gamma", ]))
 
   fit_functions <- list(fit_JSDM.1,
                         fit_JSDM.2,
@@ -365,10 +365,10 @@ run_JSDM <- function(seed,
                    missing_covariate = params$missing_covariate,
                    mcmc              = params$mcmc)
 
-  results <- assemble_results(model_results = model_results,
-                              truth         = truth,
-                              run           = run,
-                              settings      = settings)
+  results <- assemble_results(model_results  = model_results,
+                              true_parameter = true_parameter,
+                              run            = run,
+                              settings       = settings)
 
   if (params$missing_covariate) {
     mc_tag <- "MC"
